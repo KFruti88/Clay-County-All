@@ -1,0 +1,8 @@
+var calendar = new FullCalendar.Calendar(calendarEl, {
+  googleCalendarApiKey: 'YOUR_API_KEY',
+  events: 'ceab82d01e29c237da2e761555f2d2c2da76431b94e0def035ff04410e2cd71d@group.calendar.google.com',
+  eventContent: function(arg) {
+    // This is where you'd parse the 'description' to find an image URL
+    return { html: `<img src="${arg.event.extendedProps.image}"><b>${arg.event.title}</b>` };
+  }
+});
