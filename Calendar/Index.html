@@ -19,9 +19,10 @@
         .event-title { font-weight: bold; font-size: 13px; color: #333; line-height: 1.2; }
         .event-time { font-size: 11px; color: #007bff; font-weight: bold; margin-bottom: 2px; }
 
-        /* Remove default blue backgrounds */
+        /* Remove default blue backgrounds to make it look like a list of cards */
         .fc-event { background: none !important; border: none !important; padding: 0 !important; }
         .fc-event-main { color: inherit !important; }
+        .fc-daygrid-event-harness { margin-bottom: 5px !important; }
     </style>
 </head>
 <body>
@@ -36,10 +37,9 @@
           googleCalendarApiKey: 'AIzaSyBZ0TIaGkEQDYLFeIfC0_zTygolYEZd3Oc',
           events: 'ceab82d01e29c237da2e761555f2d2c2da76431b94e0def035ff04410e2cd71d@group.calendar.google.com',
           
-          // This creates the "The Events Calendar" Card look
           eventContent: function(arg) {
             let desc = arg.event.extendedProps.description || "";
-            // Find a URL in the description that ends in an image format
+            // Regex to find a link ending in an image format
             let imgMatch = desc.match(/\bhttps?:\/\/\S+\.(?:png|jpg|jpeg|gif)\b/i);
             let imgUrl = imgMatch ? imgMatch[0] : 'https://via.placeholder.com/300x150?text=Event';
 
@@ -54,7 +54,6 @@
             };
           },
 
-          // Opens the event details if a link is provided in the calendar
           eventClick: function(info) {
             if (info.event.url) {
               info.jsEvent.preventDefault();
