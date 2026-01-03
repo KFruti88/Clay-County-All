@@ -1,22 +1,57 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>My Event Calendar</title>
-    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js'></script>
+    <meta charset="UTF-8">
+    <title>Event Calendar - Card View</title>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/google-calendar@6.1.10/index.global.min.js"></script>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f8f9fa; margin: 20px; }
+        #calendar { max-width: 1200px; margin: 0 auto; background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        
+        /* The Card Styling for a "The Events Calendar" look */
+        .event-card { border: 1px solid #eee; border-radius: 8px; overflow: hidden; background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-top: 5px; }
+        .event-image { width: 100%; height: 120px; object-fit: cover; background: #f0f0f0; }
+        .event-content { padding: 8px; }
+        .event-card-title { font-weight: bold; font-size: 0.95em; color: #333; line-height: 1.2; margin-bottom: 4px; }
+        .event-card-date { font-size: 0.75em; color: #007bff; text-transform: uppercase; font-weight: bold; }
+    </style>
 </head>
 <body>
-    <div id='calendar'></div>
+    <div id="calendar"></div>
 
     <script>
-      document.addEventListener('DOMContentLoaded', function() {
-        var calendarEl = document.getElementById('calendar');
-        var calendar = new FullCalendar.Calendar(calendarEl, {
-          initialView: 'dayGridMonth',
-          googleCalendarApiKey: 'YOUR_API_KEY',
-          events: 'ceab82d01e29c237da2e761555f2d2c2da76431b94e0def035ff04410e2cd71d@group.calendar.google.com'
+        document.addEventListener('DOMContentLoaded', function() {
+            var calendarEl = document.getElementById('calendar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                googleCalendarApiKey: 'AIzaSyBZ0TIaGkEQDYLFeIfC0_zTygolYEZd3Oc', // Replace with your key
+                events: 'ceab82d01e29c237da2e761555f2d2c2da76431b94e0def035ff04410e2cd71d@group.calendar.google.com',
+                
+                // Custom Content Rendering for the "Photo View"
+                eventContent: function(arg) {
+                    // It looks for a direct image URL (e.g. .jpg) in your Google Calendar Description
+                    let description = arg.event.extendedProps.description || "";
+                    let imageUrl = "https://via.placeholder.com/300x150?text=Event+Photo";
+                    
+                    // Simple regex to find a URL in the description if one exists
+                    let urlMatch = description.match(/\bhttps?:\/\/\S+\.(?:png|jpg|jpeg|gif)\b/i);
+                    if (urlMatch) { imageUrl = urlMatch[0]; }
+
+                    let customHtml = `
+                        <div class="event-card">
+                            <img src="${imageUrl}" class="event-image">
+                            <div class="event-content">
+                                <div class="event-card-date">${arg.timeText || ''}</div>
+                                <div class="event-card-title">${arg.event.title}</div>
+                            </div>
+                        </div>
+                    `;
+                    return { html: customHtml };
+                }
+            });
+            calendar.render();
         });
-        calendar.render();
-      });
     </script>
 </body>
 </html>
