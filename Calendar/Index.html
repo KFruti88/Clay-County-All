@@ -19,8 +19,8 @@
         .event-title { font-weight: bold; font-size: 13px; color: #333; line-height: 1.2; }
         .event-time { font-size: 11px; color: #007bff; font-weight: bold; margin-bottom: 2px; }
 
-        /* Remove default blue backgrounds to make it look like a list of cards */
-        .fc-event { background: none !important; border: none !important; padding: 0 !important; }
+        /* Style tweaks to make events look like cards */
+        .fc-event { background: none !important; border: none !important; padding: 0 !important; cursor: pointer; }
         .fc-event-main { color: inherit !important; }
         .fc-daygrid-event-harness { margin-bottom: 5px !important; }
     </style>
@@ -39,7 +39,7 @@
           
           eventContent: function(arg) {
             let desc = arg.event.extendedProps.description || "";
-            // Regex to find a link ending in an image format
+            // Regex to find a link ending in an image format within the description
             let imgMatch = desc.match(/\bhttps?:\/\/\S+\.(?:png|jpg|jpeg|gif)\b/i);
             let imgUrl = imgMatch ? imgMatch[0] : 'https://via.placeholder.com/300x150?text=Event';
 
