@@ -1,8 +1,22 @@
-var calendar = new FullCalendar.Calendar(calendarEl, {
-  googleCalendarApiKey: 'YOUR_API_KEY',
-  events: 'ceab82d01e29c237da2e761555f2d2c2da76431b94e0def035ff04410e2cd71d@group.calendar.google.com',
-  eventContent: function(arg) {
-    // This is where you'd parse the 'description' to find an image URL
-    return { html: `<img src="${arg.event.extendedProps.image}"><b>${arg.event.title}</b>` };
-  }
-});
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Event Calendar</title>
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js'></script>
+</head>
+<body>
+    <div id='calendar'></div>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        var calendarEl = document.getElementById('calendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+          initialView: 'dayGridMonth',
+          googleCalendarApiKey: 'YOUR_API_KEY',
+          events: 'ceab82d01e29c237da2e761555f2d2c2da76431b94e0def035ff04410e2cd71d@group.calendar.google.com'
+        });
+        calendar.render();
+      });
+    </script>
+</body>
+</html>
