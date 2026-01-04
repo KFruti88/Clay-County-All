@@ -1,0 +1,125 @@
+<nav class="community-nav">
+    <div class="nav-container">
+        <button class="menu-toggle" aria-label="Toggle Navigation">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </button>
+
+        <ul class="nav-links">
+            <li><a href="https://supportmylocalcommunity.com/clay-county-news-center/" class="hub-link">Home Hub</a></li>
+            <li class="flora-link"><a href="https://ourflora.com">Flora News</a></li>
+            <li class="louisville-link"><a href="https://ourlouisville.com">Louisville News</a></li>
+            <li class="claycity-link"><a href="https://ourclaycity.com">Clay City News</a></li>
+        </ul>
+    </div>
+</nav>
+
+<style>
+    /* BASIC RESET & NAV BOX */
+    .community-nav {
+        width: 100%;
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border-bottom: 1px solid rgba(0,0,0,0.1);
+        position: sticky;
+        top: 0;
+        z-index: 9999;
+        padding: 10px 0;
+    }
+
+    .nav-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 0 20px;
+    }
+
+    .nav-links {
+        list-style: none;
+        display: flex;
+        gap: 15px;
+        margin: 0;
+        padding: 0;
+        align-items: center;
+    }
+
+    .nav-links a {
+        text-decoration: none;
+        font-family: sans-serif;
+        font-weight: bold;
+        transition: 0.3s;
+        display: inline-block;
+    }
+
+    /* --- YOUR BRANDING LINKS --- */
+    
+    .hub-link { color: #333; padding: 10px 15px; }
+
+    .flora-link a {
+        color: #fe4f00 !important;
+        background-color: #00205b;
+        padding: 10px 15px !important;
+        border-radius: 5px;
+    }
+    .flora-link a:hover { color: #ffffff !important; opacity: 0.9; }
+
+    .louisville-link a {
+        color: #d61a21 !important;
+        background-color: #060404;
+        padding: 10px 15px !important;
+        border-radius: 5px;
+    }
+    .louisville-link a:hover { color: #ffffff !important; opacity: 0.9; }
+
+    .claycity-link a {
+        color: #ffffff !important;
+        background-color: #0c30f0;
+        padding: 10px 15px !important;
+        border-radius: 5px;
+    }
+
+    /* --- RESPONSIVE MOBILE LOGIC --- */
+
+    .menu-toggle {
+        display: none;
+        flex-direction: column;
+        cursor: pointer;
+        background: none;
+        border: none;
+        gap: 5px;
+    }
+
+    .bar { width: 25px; height: 3px; background-color: #333; border-radius: 2px; }
+
+    @media (max-width: 768px) {
+        .menu-toggle { display: flex; }
+        
+        .nav-links {
+            display: none; /* Hidden by default on mobile */
+            flex-direction: column;
+            position: absolute;
+            top: 60px;
+            left: 0;
+            width: 100%;
+            background: white;
+            padding: 20px 0;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            gap: 20px;
+        }
+
+        .nav-links.active { display: flex; }
+        
+        .nav-links li { width: 90%; text-align: center; }
+        .nav-links a { width: 100%; box-sizing: border-box; }
+    }
+</style>
+
+<script>
+    document.querySelector('.menu-toggle').addEventListener('click', function() {
+        document.querySelector('.nav-links').classList.toggle('active');
+    });
+</script>
