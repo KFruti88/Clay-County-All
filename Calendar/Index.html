@@ -9,20 +9,28 @@
     <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/google-calendar@6.1.10/index.global.min.js"></script>
 
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f4f4f4; margin: 10px; }
-        #calendar { max-width: 1100px; margin: 0 auto; background: white; padding: 15px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        body { font-family: 'Inter', -apple-system, sans-serif; background: #f0f2f5; margin: 0; padding: 20px; }
+        #calendar { max-width: 1200px; margin: 0 auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
         
-        /* Card View Styling */
-        .event-card { border: 1px solid #ddd; border-radius: 6px; overflow: hidden; background: #fff; margin-bottom: 4px; }
-        .event-image { width: 100%; height: 100px; object-fit: cover; background: #eee; display: block; }
-        .event-info { padding: 6px; text-align: center; }
-        .event-title { font-weight: bold; font-size: 13px; color: #333; line-height: 1.2; }
-        .event-time { font-size: 11px; color: #007bff; font-weight: bold; margin-bottom: 2px; }
+        /* Card Improvements */
+        .event-card { border: 1px solid #eef0f2; border-radius: 8px; overflow: hidden; background: #fff; transition: transform 0.2s ease; }
+        .event-card:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .event-image { width: 100%; height: 80px; object-fit: cover; background: #34495e; display: block; }
+        .event-info { padding: 8px; text-align: left; }
+        .event-title { font-weight: 700; font-size: 12px; color: #2c3e50; line-height: 1.3; margin-top: 4px; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+        .event-time { font-size: 10px; color: #3498db; font-weight: bold; text-transform: uppercase; }
 
-        /* Style tweaks to make events look like cards */
-        .fc-event { background: none !important; border: none !important; padding: 0 !important; cursor: pointer; }
-        .fc-event-main { color: inherit !important; }
-        .fc-daygrid-event-harness { margin-bottom: 5px !important; }
+        /* FullCalendar UI Customization */
+        .fc-toolbar-title { font-size: 1.5rem !important; font-weight: bold; color: #2c3e50; }
+        .fc-button-primary { background-color: #3498db !important; border: none !important; }
+        .fc-event { background: none !important; border: none !important; }
+        .fc-daygrid-event-harness { margin-bottom: 8px !important; }
+        
+        /* Mobile adjustment */
+        @media (max-width: 768px) {
+            .event-image { height: 50px; }
+            .event-title { font-size: 10px; }
+        }
     </style>
 </head>
 <body>
@@ -34,20 +42,27 @@
         var calendarEl = document.getElementById('calendar');
         var calendar = new FullCalendar.Calendar(calendarEl, {
           initialView: 'dayGridMonth',
+          headerToolbar: {
+            left: 'prev,next today',
+            center: 'title',
+            right: 'dayGridMonth,listMonth' // Added List view for mobile friendliness
+          },
           googleCalendarApiKey: 'AIzaSyBZ0TIaGkEQDYLFeIfC0_zTygolYEZd3Oc',
           events: 'ceab82d01e29c237da2e761555f2d2c2da76431b94e0def035ff04410e2cd71d@group.calendar.google.com',
           
           eventContent: function(arg) {
             let desc = arg.event.extendedProps.description || "";
-            // Regex to find a link ending in an image format within the description
             let imgMatch = desc.match(/\bhttps?:\/\/\S+\.(?:png|jpg|jpeg|gif)\b/i);
-            let imgUrl = imgMatch ? imgMatch[0] : 'https://via.placeholder.com/300x150?text=Event';
+            
+            // Fallback logic: Use a themed placeholder if no image is found
+            let fallbackImg = "https://images.unsplash.com/photo-1506784919141-935043917140?auto=format&fit=crop&q=60&w=300"; 
+            let imgUrl = imgMatch ? imgMatch[0] : fallbackImg;
 
             return { html: `
                 <div class="event-card">
-                    <img src="${imgUrl}" class="event-image">
+                    <img src="${imgUrl}" class="event-image" onerror="this.src='${fallbackImg}'">
                     <div class="event-info">
-                        <div class="event-time">${arg.timeText}</div>
+                        <div class="event-time">${arg.timeText || 'All Day'}</div>
                         <div class="event-title">${arg.event.title}</div>
                     </div>
                 </div>` 
@@ -55,10 +70,10 @@
           },
 
           eventClick: function(info) {
-            if (info.event.url) {
-              info.jsEvent.preventDefault();
-              window.open(info.event.url, '_blank');
-            }
+            info.jsEvent.preventDefault();
+            // Fallback to GCal link if no custom URL is in the description
+            let targetUrl = info.event.url || `https://www.google.com/calendar/render?action=VIEW&eid=${info.event.id}`;
+            window.open(targetUrl, '_blank');
           }
         });
         calendar.render();
