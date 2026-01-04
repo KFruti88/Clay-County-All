@@ -1,20 +1,10 @@
 [
   {
-    "title": "Flora Watermelon Festival",
-    "start_date": "2026-08-15",
-    "time": "10:00 AM",
-    "location": "Flora Library Park",
-    "town": "Flora",
-    "category": "Festival",
-    "description": "Annual community celebration with food, games, and music."
-  },
-  {
-    "title": "Louisville High School Graduation",
-    "start_date": "2026-05-22",
-    "time": "7:00 PM",
-    "location": "High School Gym",
-    "town": "Louisville",
-    "category": "School",
-    "description": "Commencement ceremony for the Class of 2026."
+    "title": "Example Event",
+    "start_date": "2026-01-15",
+    "time": "6:00 PM",
+    "location": "Clay City Park",
+    "town": "Clay City",
+    "description": "Join us for a community gathering!"
   }
 ]
