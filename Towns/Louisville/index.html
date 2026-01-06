@@ -9,7 +9,6 @@
             --cardinal-red: #C41E3A;
             --glass-bg: rgba(15, 15, 15, 0.85);
             --glass-border: rgba(255, 255, 255, 0.1);
-            --glow: 0 0 20px rgba(196, 30, 58, 0.2);
         }
 
         body {
@@ -22,7 +21,6 @@
             flex-direction: column;
             align-items: center;
             background-color: #050505;
-            /* Wallpaper Logic for Ultrawide 2560x1080 */
             background-image: radial-gradient(circle at center, transparent, #050505),
                               url('https://github.com/KFruti88/Clay-County-All/raw/main/Towns/Louisville/LouisvilleMascot.PNG');
             background-attachment: fixed;
@@ -31,11 +29,9 @@
             background-size: contain;
         }
 
-        /* Adjusts mascot size for Ultrawide */
         @media (min-width: 2000px) { body { background-size: 50%; } }
         @media (max-width: 1000px) { body { background-size: 85%; } }
 
-        /* --- Global Glossy Rule --- */
         .glass {
             backdrop-filter: blur(20px) saturate(180%);
             -webkit-backdrop-filter: blur(20px) saturate(180%);
@@ -69,40 +65,28 @@
             margin-top: 25px;
         }
 
-        /* --- Gas Station Sign --- */
         .gas-sign {
             background: linear-gradient(145deg, #111, #000);
             border: 2px solid #333;
             border-radius: 20px;
             padding: 25px;
             box-shadow: 0 20px 50px rgba(0,0,0,0.8);
-            position: relative;
-        }
-
-        .gas-sign::before {
-            content: ""; position: absolute; top:0; left:0; right:0; height: 50%;
-            background: linear-gradient(rgba(255,255,255,0.05), transparent);
-            pointer-events: none;
         }
 
         .fuel-row {
             display: flex; justify-content: space-between; align-items: center;
             padding: 15px 0; border-bottom: 1px solid #222;
         }
-        .fuel-name { font-weight: 900; font-size: 1rem; color: #aaa; }
         .unleaded .price-val { color: #ffeb3b; }
         .diesel .price-val { color: #4caf50; }
         .price-val { font-family: 'Courier New', monospace; font-size: 3rem; font-weight: bold; }
 
-        /* --- Clock & Weather --- */
         .status-card {
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             text-align: center;
         }
         #clock { font-size: 3.5rem; font-weight: 800; margin-bottom: 10px; }
-        .weather { color: #81d4fa; font-size: 1.4rem; font-weight: 600; }
 
-        /* --- Feed Section --- */
         .intelligence-feed {
             width: 90%;
             max-width: 1100px;
@@ -120,17 +104,11 @@
             transition: 0.3s ease;
         }
         .news-card:hover { transform: translateX(10px); background: rgba(255,255,255,0.08); }
-        .news-card a { color: #eee; text-decoration: none; font-size: 1.2rem; }
+        .news-card a { color: #eee; text-decoration: none; font-size: 1.2rem; display: block; }
 
         .back-btn {
             background: var(--cardinal-red); color: white; padding: 12px 25px;
-            border-radius: 50px; text-decoration: none; font-weight: bold; transition: 0.3s;
-        }
-        .back-btn:hover { filter: brightness(1.2); box-shadow: var(--glow); }
-
-        @media (max-width: 800px) {
-            .dashboard-grid { grid-template-columns: 1fr; }
-            header { flex-direction: column; gap: 20px; text-align: center; }
+            border-radius: 50px; text-decoration: none; font-weight: bold;
         }
     </style>
 </head>
@@ -150,27 +128,24 @@
                 <img src="https://github.com/KFruti88/Clay-County-Fuel/raw/main/images/caseys.png" height="40" alt="Casey's">
             </div>
             <div class="fuel-row unleaded">
-                <span class="fuel-name">UNLEADED 87</span>
+                <span style="color: #aaa; font-weight: 900;">UNLEADED 87</span>
                 <span id="reg-price" class="price-val">---</span>
             </div>
             <div class="fuel-row diesel">
-                <span class="fuel-name">DIESEL LS</span>
+                <span style="color: #aaa; font-weight: 900;">DIESEL LS</span>
                 <span id="diesel-price" class="price-val">---</span>
             </div>
         </div>
 
         <div class="status-card glass">
             <div id="clock">--:--</div>
-            <div class="weather">
-                34°F<br>
-                <span style="font-size: 0.6em; opacity: 0.7; letter-spacing: 2px;">MOSTLY CLEAR</span>
-            </div>
+            <div style="color: #81d4fa; font-size: 1.4rem; font-weight: 600;">34°F<br><span style="font-size: 0.6em; opacity: 0.7; letter-spacing: 2px;">MOSTLY CLEAR</span></div>
         </div>
     </div>
 
     <div class="intelligence-feed glass">
         <h2 style="color: #ffca28; margin-top: 0; letter-spacing: 2px;">COMMUNITY INTELLIGENCE</h2>
-        <div id="news-text">Syncing data streams...</div>
+        <div id="news-text">Filtering global feed for Louisville intelligence...</div>
     </div>
 
     <script>
@@ -180,31 +155,56 @@
         }
         setInterval(updateClock, 1000); updateClock();
 
-        async function loadData() {
+        // LOCKED IN SOURCE PATHS
+        const LOCAL_DATA = 'data.json'; 
+        const GLOBAL_NEWS = 'https://raw.githubusercontent.com/KFruti88/clay-county-news/main/news_data.json';
+
+        async function loadLockedIntelligence() {
             const container = document.getElementById('news-text');
+            const keywords = ["louisville", "north clay", "cardinals", "indians"];
+
             try {
-                const res = await fetch('data.json');
-                const data = await res.json();
-                
-                // Gas Logic
-                const gas = data.updates.find(i => i.name.includes('48026'));
+                // Fetch both sources
+                const [localRes, newsRes] = await Promise.all([
+                    fetch(LOCAL_DATA).then(res => res.ok ? res.json() : { updates: [] }),
+                    fetch(GLOBAL_NEWS).then(res => res.ok ? res.json() : [])
+                ]);
+
+                // --- GAS DATA (Local) ---
+                const gas = localRes.updates.find(i => i.name.includes('48026'));
                 if (gas) {
                     const p = gas.name.split(',');
-                    document.getElementById('reg-price').innerText = p[2] || '---';
-                    document.getElementById('diesel-price').innerText = p[3] || '---';
+                    document.getElementById('reg-price').innerText = p[2] ? p[2].trim() : '---';
+                    document.getElementById('diesel-price').innerText = p[3] ? p[3].trim() : '---';
                 }
 
-                // News Logic
-                const newsItems = data.updates.filter(i => !i.name.includes('48026'));
-                container.innerHTML = newsItems.length > 0 ? newsItems.map(item => `
-                    <div class="news-card">
-                        <span style="color:var(--cardinal-red); font-weight: 900; font-size: 0.8em;">[${item.category.toUpperCase()}]</span><br>
-                        <a href="${item.url}" target="_blank">${item.name}</a>
-                    </div>
-                `).join('') : "No active reports.";
-            } catch (e) { container.innerText = "Reconnecting to feed..."; }
+                // --- NEWS DATA (Global news_data.json) ---
+                // Filter the array of objects in news_data.json
+                const filtered = newsRes.filter(item => {
+                    // Check title and category for keywords
+                    const searchArea = `${item.title} ${item.category} ${item.description || ''}`.toLowerCase();
+                    return keywords.some(key => searchArea.includes(key));
+                });
+
+                if (filtered.length > 0) {
+                    container.innerHTML = filtered.map(item => `
+                        <div class="news-card">
+                            <span style="color:var(--cardinal-red); font-weight: 900; font-size: 0.8em;">
+                                [${(item.category || 'GENERAL').toUpperCase()}]
+                            </span><br>
+                            <a href="${item.url || item.link}" target="_blank">${item.title}</a>
+                        </div>
+                    `).join('');
+                } else {
+                    container.innerHTML = "<p style='opacity:0.6;'>No local news matching keywords found in the master feed.</p>";
+                }
+
+            } catch (e) {
+                console.error("Lock-in Sync Error:", e);
+                container.innerHTML = "<p style='color:red;'>Intelligence stream interrupted. Retrying...</p>";
+            }
         }
-        loadData();
+        loadLockedIntelligence();
     </script>
 </body>
 </html>
