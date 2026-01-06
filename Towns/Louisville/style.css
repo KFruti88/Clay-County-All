@@ -1,23 +1,91 @@
+/* --- Global Styles --- */
 body {
     background-color: #f8f8f8;
     color: #333;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
-    padding: 20px;
+    padding: 0; /* Changed to 0 so the header touches the edges */
+    line-height: 1.6;
 }
 
+/* --- Header & Branding --- */
 header {
     background-color: #C41E3A; /* Cardinal Red */
     color: white;
-    padding: 20px;
+    padding: 30px 20px;
     text-align: center;
-    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.header-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+
+.mascot-logo {
+    width: 80px; 
+    height: auto;
+    vertical-align: middle;
+    filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.2));
+}
+
+/* --- Content & Cards --- */
+main {
+    padding: 20px;
+    max-width: 900px;
+    margin: auto;
 }
 
 .news-card {
     background: white;
     border-left: 5px solid #C41E3A;
     margin: 20px 0;
-    padding: 15px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    padding: 20px;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    transition: transform 0.2s ease-in-out;
+}
+
+.news-card:hover {
+    transform: translateX(5px); /* Subtle slide effect on hover */
+}
+
+/* --- Navigation & Links --- */
+ul {
+    padding: 0;
+    list-style: none;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+    transition: 0.2s ease-in-out;
+}
+
+a:hover {
+    opacity: 0.8;
+}
+
+/* --- Responsive Adjustments (Mobile) --- */
+@media (max-width: 600px) {
+    body {
+        padding: 0; /* Keep edge-to-edge on small screens */
+    }
+    
+    .header-content {
+        flex-direction: column; /* Stack logo above text on phones */
+        gap: 10px;
+    }
+
+    .mascot-logo {
+        margin-right: 0;
+        margin-bottom: 5px;
+        width: 60px; /* Slightly smaller logo for mobile */
+    }
+
+    header h1 {
+        font-size: 1.8em;
+    }
 }
