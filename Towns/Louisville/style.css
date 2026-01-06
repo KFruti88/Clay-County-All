@@ -1,91 +1,125 @@
-/* --- Global Styles --- */
-body {
-    background-color: #f8f8f8;
-    color: #333;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    margin: 0;
-    padding: 0; /* Changed to 0 so the header touches the edges */
-    line-height: 1.6;
+/* --- Master Variables --- */
+:root {
+    --glass-bg: rgba(20, 20, 20, 0.7);
+    --glass-border: rgba(255, 255, 255, 0.15);
+    --cardinal-red: #C41E3A;
+    --digital-yellow: #ffeb3b;
+    --digital-green: #4caf50;
+    --shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
 }
 
-/* --- Header & Branding --- */
-header {
-    background-color: #C41E3A; /* Cardinal Red */
+/* --- Global & Background Layout --- */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
     color: white;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-x: hidden;
+    line-height: 1.6;
+
+    /* --- Wallpaper Logic for 2560x1080 & Standard Screens --- */
+    background-image: linear-gradient(rgba(10, 10, 10, 0.85), rgba(10, 10, 10, 0.85)), 
+                      url('https://github.com/KFruti88/Clay-County-All/raw/main/Towns/Louisville/LouisvilleMascot.PNG');
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain; /* Ensures logo isn't stretched/distorted */
+}
+
+/* --- Glassmorphism Components --- */
+header, .info-glass, .intelligence-feed, #news-section {
+    backdrop-filter: blur(25px) saturate(180%);
+    -webkit-backdrop-filter: blur(25px) saturate(180%);
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+}
+
+header {
+    width: 95%;
+    max-width: 1000px;
+    margin-top: 25px;
     padding: 30px 20px;
     text-align: center;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    border-bottom: 5px solid var(--cardinal-red);
 }
 
-.header-content {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 20px;
-}
-
-.mascot-logo {
-    width: 80px; 
-    height: auto;
-    vertical-align: middle;
-    filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.2));
-}
-
-/* --- Content & Cards --- */
-main {
-    padding: 20px;
-    max-width: 900px;
-    margin: auto;
-}
-
+/* --- News Cards (Floating Glass Look) --- */
 .news-card {
-    background: white;
-    border-left: 5px solid #C41E3A;
+    background: rgba(255, 255, 255, 0.05);
+    border-left: 5px solid var(--cardinal-red);
     margin: 20px 0;
     padding: 20px;
-    border-radius: 4px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    transition: transform 0.2s ease-in-out;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease, background 0.3s ease;
 }
 
 .news-card:hover {
-    transform: translateX(5px); /* Subtle slide effect on hover */
+    transform: translateX(10px) scale(1.02);
+    background: rgba(255, 255, 255, 0.1);
 }
 
-/* --- Navigation & Links --- */
-ul {
-    padding: 0;
-    list-style: none;
-}
+/* --- Ultrawide & Mobile Scaling --- */
 
-a {
-    text-decoration: none;
-    color: inherit;
-    transition: 0.2s ease-in-out;
-}
-
-a:hover {
-    opacity: 0.8;
-}
-
-/* --- Responsive Adjustments (Mobile) --- */
-@media (max-width: 600px) {
+/* 2560x1080 Optimization */
+@media (min-width: 2000px) {
     body {
-        padding: 0; /* Keep edge-to-edge on small screens */
+        background-size: 55%; /* Keeps mascot proportionate on wide screens */
     }
-    
+}
+
+/* Standard Desktop */
+@media (min-width: 1001px) and (max-width: 1999px) {
+    body {
+        background-size: 70%;
+    }
+}
+
+/* Mobile & Tablet */
+@media (max-width: 768px) {
+    body {
+        background-size: 90%; /* Larger logo ratio for vertical screens */
+    }
+
+    header {
+        width: 100%;
+        border-radius: 0;
+        margin-top: 0;
+    }
+
     .header-content {
-        flex-direction: column; /* Stack logo above text on phones */
+        flex-direction: column;
         gap: 10px;
     }
 
     .mascot-logo {
-        margin-right: 0;
-        margin-bottom: 5px;
-        width: 60px; /* Slightly smaller logo for mobile */
-    }
-
-    header h1 {
-        font-size: 1.8em;
+        width: 60px;
     }
 }
+
+/* --- Links & Utility --- */
+a {
+    text-decoration: none;
+    color: inherit;
+    transition: 0.2s ease;
+}
+
+a:hover {
+    color: var(--cardinal-red);
+}
+
+
+
+### What this update achieves:
+1.  **Anti-Distortion:** By using `background-size: contain` and specific `@media` percentages, your mascot will never look "fat" or "squashed" on your 2560x1080 monitor.
+2.  **Glossy Depth:** The `backdrop-filter` creates that frosted glass look you see in modern operating systems.
+3.  **Interaction:** The news cards now have a "Pop and Slide" effect when you hover over them.
+4.  **Mobile Ready:** On a phone, the header automatically loses its margins to fill the small screen.
+
+**Would you like me to adjust the background darkening (currently 85%) to make the mascot pop more or fade more?**
