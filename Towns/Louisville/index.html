@@ -6,167 +6,139 @@
     <title>Louisville Intelligence Hub</title>
     <style>
         :root {
-            --glass-bg: rgba(20, 20, 20, 0.75);
-            --glass-border: rgba(255, 255, 255, 0.12);
             --cardinal-red: #C41E3A;
-            --digital-yellow: #ffeb3b;
-            --digital-green: #4caf50;
+            --glass-bg: rgba(15, 15, 15, 0.85);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --glow: 0 0 20px rgba(196, 30, 58, 0.2);
         }
 
         body {
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', system-ui, sans-serif;
+            font-family: 'Segoe UI', Roboto, sans-serif;
             color: white;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
-            overflow-x: hidden;
-
-            /* --- Wallpaper Logic: Optimized for 2560x1080 --- */
-            background-image: linear-gradient(rgba(10, 10, 10, 0.88), rgba(10, 10, 10, 0.88)), 
+            background-color: #050505;
+            /* Wallpaper Logic for Ultrawide 2560x1080 */
+            background-image: radial-gradient(circle at center, transparent, #050505),
                               url('https://github.com/KFruti88/Clay-County-All/raw/main/Towns/Louisville/LouisvilleMascot.PNG');
             background-attachment: fixed;
             background-position: center;
             background-repeat: no-repeat;
-            background-size: contain; /* Prevents distortion on ultrawide */
-            background-color: #050505;
+            background-size: contain;
         }
 
-        /* Responsive Background Scaling */
-        @media (min-width: 2000px) { body { background-size: 55%; } } /* Ultrawide */
-        @media (max-width: 768px) { body { background-size: 90%; } }  /* Mobile */
+        /* Adjusts mascot size for Ultrawide */
+        @media (min-width: 2000px) { body { background-size: 50%; } }
+        @media (max-width: 1000px) { body { background-size: 85%; } }
 
-        /* --- Glossy Navigation Header --- */
-        header {
-            width: 95%;
-            max-width: 1000px;
-            margin-top: 25px;
-            padding: 25px;
-            background: linear-gradient(135deg, rgba(196, 30, 58, 0.25), rgba(0, 0, 0, 0.5));
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
+        /* --- Global Glossy Rule --- */
+        .glass {
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            background: var(--glass-bg);
             border: 1px solid var(--glass-border);
             border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        header {
+            width: 90%;
+            max-width: 1100px;
+            margin-top: 30px;
+            padding: 25px;
+            border-bottom: 4px solid var(--cardinal-red);
             display: flex;
             justify-content: space-between;
             align-items: center;
             box-sizing: border-box;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
-        .header-title h1 { margin: 0; font-size: 2.2em; text-transform: uppercase; letter-spacing: 2px; }
-        .header-title p { margin: 5px 0 0; color: #ffca28; font-weight: bold; font-size: 0.9em; }
+        .header-text h1 { margin: 0; font-size: 2.5rem; letter-spacing: 2px; }
+        .header-text p { margin: 5px 0 0; color: #ffca28; font-weight: bold; opacity: 0.9; }
 
-        .back-btn {
-            background: var(--cardinal-red);
-            color: white;
-            padding: 12px 24px;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: bold;
-            box-shadow: 0 5px 15px rgba(196, 30, 58, 0.4);
-            transition: 0.3s ease;
-        }
-        .back-btn:hover { transform: scale(1.05); filter: brightness(1.2); }
-
-        /* --- Dashboard Grid --- */
         .dashboard-grid {
             display: grid;
             grid-template-columns: 1.2fr 0.8fr;
-            gap: 20px;
-            width: 95%;
-            max-width: 1000px;
+            gap: 25px;
+            width: 90%;
+            max-width: 1100px;
             margin-top: 25px;
         }
 
-        /* Gas Station Sign Look */
+        /* --- Gas Station Sign --- */
         .gas-sign {
-            background: linear-gradient(145deg, #151515, #000);
+            background: linear-gradient(145deg, #111, #000);
             border: 2px solid #333;
             border-radius: 20px;
-            padding: 20px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.7);
+            padding: 25px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
             position: relative;
-            overflow: hidden;
         }
 
         .gas-sign::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 40%;
+            content: ""; position: absolute; top:0; left:0; right:0; height: 50%;
             background: linear-gradient(rgba(255,255,255,0.05), transparent);
+            pointer-events: none;
         }
 
         .fuel-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 0;
-            border-bottom: 1px solid #222;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 15px 0; border-bottom: 1px solid #222;
         }
+        .fuel-name { font-weight: 900; font-size: 1rem; color: #aaa; }
+        .unleaded .price-val { color: #ffeb3b; }
+        .diesel .price-val { color: #4caf50; }
+        .price-val { font-family: 'Courier New', monospace; font-size: 3rem; font-weight: bold; }
 
-        .fuel-name { font-weight: 900; font-size: 0.8em; letter-spacing: 1px; }
-        .unleaded { color: var(--digital-yellow); }
-        .diesel { color: var(--digital-green); border-bottom: none; }
-        .digital-value { font-family: 'Courier New', monospace; font-size: 2.5em; font-weight: bold; }
-
-        /* Clock & Weather Combo Card */
+        /* --- Clock & Weather --- */
         .status-card {
-            background: var(--glass-bg);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            border: 1px solid var(--glass-border);
-            border-radius: 20px;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
             text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
+        #clock { font-size: 3.5rem; font-weight: 800; margin-bottom: 10px; }
+        .weather { color: #81d4fa; font-size: 1.4rem; font-weight: 600; }
 
-        .clock-display { font-size: 2.8em; font-weight: 800; margin-bottom: 10px; }
-        .weather-info { color: #81d4fa; font-weight: 600; font-size: 1.2em; }
-
-        /* --- Intelligence Feed --- */
+        /* --- Feed Section --- */
         .intelligence-feed {
-            width: 95%;
-            max-width: 1000px;
+            width: 90%;
+            max-width: 1100px;
             margin: 25px 0 60px;
-            background: var(--glass-bg);
-            backdrop-filter: blur(30px);
-            -webkit-backdrop-filter: blur(30px);
-            border: 1px solid var(--glass-border);
-            border-radius: 25px;
             padding: 35px;
             box-sizing: border-box;
         }
 
         .news-card {
-            background: rgba(255, 255, 255, 0.03);
-            margin-bottom: 15px;
-            padding: 18px;
+            background: rgba(255,255,255,0.03);
+            margin-bottom: 20px;
+            padding: 20px;
             border-radius: 15px;
             border-left: 6px solid var(--cardinal-red);
             transition: 0.3s ease;
         }
+        .news-card:hover { transform: translateX(10px); background: rgba(255,255,255,0.08); }
+        .news-card a { color: #eee; text-decoration: none; font-size: 1.2rem; }
 
-        .news-card:hover { transform: translateX(8px); background: rgba(255,255,255,0.07); }
-        .news-card a { color: #eee; text-decoration: none; font-size: 1.1em; font-weight: 500; }
-        
-        @media (max-width: 850px) {
+        .back-btn {
+            background: var(--cardinal-red); color: white; padding: 12px 25px;
+            border-radius: 50px; text-decoration: none; font-weight: bold; transition: 0.3s;
+        }
+        .back-btn:hover { filter: brightness(1.2); box-shadow: var(--glow); }
+
+        @media (max-width: 800px) {
             .dashboard-grid { grid-template-columns: 1fr; }
+            header { flex-direction: column; gap: 20px; text-align: center; }
         }
     </style>
 </head>
 <body>
 
-    <header>
-        <div class="header-title">
-            <h1>Louisville, IL</h1>
+    <header class="glass">
+        <div class="header-text">
+            <h1>LOUISVILLE, IL</h1>
             <p>HOME OF THE NORTH CLAY CARDINALS</p>
         </div>
         <a href="../../index.html" class="back-btn">DASHBOARD</a>
@@ -174,32 +146,31 @@
 
     <div class="dashboard-grid">
         <div class="gas-sign">
-            <div style="text-align: center; margin-bottom: 10px;">
-                <img src="https://github.com/KFruti88/Clay-County-Fuel/raw/main/images/caseys.png" alt="Casey's" style="height: 35px;">
+            <div style="text-align: center; margin-bottom: 15px;">
+                <img src="https://github.com/KFruti88/Clay-County-Fuel/raw/main/images/caseys.png" height="40" alt="Casey's">
             </div>
             <div class="fuel-row unleaded">
                 <span class="fuel-name">UNLEADED 87</span>
-                <span id="reg-price" class="digital-value">---</span>
+                <span id="reg-price" class="price-val">---</span>
             </div>
             <div class="fuel-row diesel">
                 <span class="fuel-name">DIESEL LS</span>
-                <span id="diesel-price" class="digital-value">---</span>
+                <span id="diesel-price" class="price-val">---</span>
             </div>
-            <div id="gas-updated" style="font-size: 0.6em; text-align: center; margin-top: 10px; opacity: 0.5;">AWAITING SCAN...</div>
         </div>
 
-        <div class="status-card">
-            <div id="clock" class="clock-display">--:--</div>
-            <div class="weather-info">
-                <span>38°F</span><br>
-                <span style="font-size: 0.6em; opacity: 0.7; letter-spacing: 1px;">PARTLY CLOUDY</span>
+        <div class="status-card glass">
+            <div id="clock">--:--</div>
+            <div class="weather">
+                34°F<br>
+                <span style="font-size: 0.6em; opacity: 0.7; letter-spacing: 2px;">MOSTLY CLEAR</span>
             </div>
         </div>
     </div>
 
-    <div class="intelligence-feed">
-        <h2 style="color: #ffca28; text-transform: uppercase; letter-spacing: 2px; margin-top: 0;">Community Intelligence Feed</h2>
-        <div id="news-text" style="opacity: 0.8;">Scanning encrypted data streams...</div>
+    <div class="intelligence-feed glass">
+        <h2 style="color: #ffca28; margin-top: 0; letter-spacing: 2px;">COMMUNITY INTELLIGENCE</h2>
+        <div id="news-text">Syncing data streams...</div>
     </div>
 
     <script>
@@ -207,47 +178,33 @@
             const now = new Date();
             document.getElementById('clock').innerText = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
         }
-        setInterval(updateClock, 1000);
-        updateClock();
+        setInterval(updateClock, 1000); updateClock();
 
-        async function loadIntelligence() {
+        async function loadData() {
             const container = document.getElementById('news-text');
-            const regDisplay = document.getElementById('reg-price');
-            const dieselDisplay = document.getElementById('diesel-price');
-            const statusFooter = document.getElementById('gas-updated');
-            
             try {
                 const res = await fetch('data.json');
-                if (!res.ok) throw new Error("Data not found");
                 const data = await res.json();
-                const allUpdates = data.updates || [];
                 
-                // Process Fuel Data
-                const gasEntry = allUpdates.find(item => item.name.includes('48026'));
-                if (gasEntry) {
-                    const parts = gasEntry.name.split(',');
-                    regDisplay.innerText = parts[2] ? parts[2].trim() : "---";
-                    dieselDisplay.innerText = parts[3] ? parts[3].trim() : "---";
-                    statusFooter.innerText = `SYNCED: ${new Date().toLocaleDateString()}`;
+                // Gas Logic
+                const gas = data.updates.find(i => i.name.includes('48026'));
+                if (gas) {
+                    const p = gas.name.split(',');
+                    document.getElementById('reg-price').innerText = p[2] || '---';
+                    document.getElementById('diesel-price').innerText = p[3] || '---';
                 }
 
-                // Render Filtered News
-                const newsItems = allUpdates.filter(item => !item.name.includes('48026'));
-                if (newsItems.length > 0) {
-                    container.innerHTML = newsItems.map(item => `
-                        <div class="news-card">
-                            <span style="color:var(--cardinal-red); font-size: 0.7em; font-weight: 900;">[${item.category.toUpperCase()}]</span><br>
-                            <a href="${item.url}" target="_blank">${item.name}</a>
-                        </div>
-                    `).join('');
-                } else {
-                    container.innerText = "No news found in local scans.";
-                }
-            } catch (error) {
-                container.innerText = "Synchronizing with master feed...";
-            }
+                // News Logic
+                const newsItems = data.updates.filter(i => !i.name.includes('48026'));
+                container.innerHTML = newsItems.length > 0 ? newsItems.map(item => `
+                    <div class="news-card">
+                        <span style="color:var(--cardinal-red); font-weight: 900; font-size: 0.8em;">[${item.category.toUpperCase()}]</span><br>
+                        <a href="${item.url}" target="_blank">${item.name}</a>
+                    </div>
+                `).join('') : "No active reports.";
+            } catch (e) { container.innerText = "Reconnecting to feed..."; }
         }
-        loadIntelligence();
+        loadData();
     </script>
 </body>
 </html>
