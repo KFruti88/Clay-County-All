@@ -9,6 +9,8 @@
             --cardinal-red: #C41E3A;
             --glass-bg: rgba(15, 15, 15, 0.85);
             --glass-border: rgba(255, 255, 255, 0.1);
+            --digital-yellow: #ffeb3b;
+            --digital-green: #4caf50;
         }
 
         body {
@@ -21,6 +23,8 @@
             flex-direction: column;
             align-items: center;
             background-color: #050505;
+            
+            /* --- Ultrawide Optimization (2560x1080) --- */
             background-image: radial-gradient(circle at center, transparent, #050505),
                               url('https://github.com/KFruti88/Clay-County-All/raw/main/Towns/Louisville/LouisvilleMascot.PNG');
             background-attachment: fixed;
@@ -29,6 +33,7 @@
             background-size: contain;
         }
 
+        /* Prevent mascot distortion on large/small screens */
         @media (min-width: 2000px) { body { background-size: 50%; } }
         @media (max-width: 1000px) { body { background-size: 85%; } }
 
@@ -65,28 +70,40 @@
             margin-top: 25px;
         }
 
+        /* --- Digital Gas Station Sign --- */
         .gas-sign {
             background: linear-gradient(145deg, #111, #000);
             border: 2px solid #333;
             border-radius: 20px;
             padding: 25px;
             box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .gas-sign::before {
+            content: ""; position: absolute; top:0; left:0; right:0; height: 50%;
+            background: linear-gradient(rgba(255,255,255,0.05), transparent);
         }
 
         .fuel-row {
             display: flex; justify-content: space-between; align-items: center;
             padding: 15px 0; border-bottom: 1px solid #222;
         }
-        .unleaded .price-val { color: #ffeb3b; }
-        .diesel .price-val { color: #4caf50; }
+        .fuel-name { font-weight: 900; font-size: 1rem; color: #aaa; }
+        .unleaded .price-val { color: var(--digital-yellow); }
+        .diesel .price-val { color: var(--digital-green); }
         .price-val { font-family: 'Courier New', monospace; font-size: 3rem; font-weight: bold; }
 
+        /* --- Info Card (Clock/Weather) --- */
         .status-card {
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             text-align: center;
         }
         #clock { font-size: 3.5rem; font-weight: 800; margin-bottom: 10px; }
+        .weather { color: #81d4fa; font-size: 1.4rem; font-weight: 600; }
 
+        /* --- News Feed --- */
         .intelligence-feed {
             width: 90%;
             max-width: 1100px;
@@ -108,7 +125,13 @@
 
         .back-btn {
             background: var(--cardinal-red); color: white; padding: 12px 25px;
-            border-radius: 50px; text-decoration: none; font-weight: bold;
+            border-radius: 50px; text-decoration: none; font-weight: bold; transition: 0.3s;
+        }
+        .back-btn:hover { filter: brightness(1.2); }
+
+        @media (max-width: 800px) {
+            .dashboard-grid { grid-template-columns: 1fr; }
+            header { flex-direction: column; gap: 20px; text-align: center; }
         }
     </style>
 </head>
@@ -128,83 +151,95 @@
                 <img src="https://github.com/KFruti88/Clay-County-Fuel/raw/main/images/caseys.png" height="40" alt="Casey's">
             </div>
             <div class="fuel-row unleaded">
-                <span style="color: #aaa; font-weight: 900;">UNLEADED 87</span>
+                <span class="fuel-name">UNLEADED 87</span>
                 <span id="reg-price" class="price-val">---</span>
             </div>
             <div class="fuel-row diesel">
-                <span style="color: #aaa; font-weight: 900;">DIESEL LS</span>
+                <span class="fuel-name">DIESEL LS</span>
                 <span id="diesel-price" class="price-val">---</span>
             </div>
         </div>
 
         <div class="status-card glass">
             <div id="clock">--:--</div>
-            <div style="color: #81d4fa; font-size: 1.4rem; font-weight: 600;">34°F<br><span style="font-size: 0.6em; opacity: 0.7; letter-spacing: 2px;">MOSTLY CLEAR</span></div>
+            <div class="weather">
+                34°F<br>
+                <span style="font-size: 0.6em; opacity: 0.7; letter-spacing: 2px;">MOSTLY CLEAR</span>
+            </div>
         </div>
     </div>
 
     <div class="intelligence-feed glass">
         <h2 style="color: #ffca28; margin-top: 0; letter-spacing: 2px;">COMMUNITY INTELLIGENCE</h2>
-        <div id="news-text">Filtering global feed for Louisville intelligence...</div>
+        <div id="news-text">Initiating news scan...</div>
     </div>
 
     <script>
+        // Clock Function
         function updateClock() {
             const now = new Date();
             document.getElementById('clock').innerText = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
         }
         setInterval(updateClock, 1000); updateClock();
 
-        // LOCKED IN SOURCE PATHS
         const LOCAL_DATA = 'data.json'; 
         const GLOBAL_NEWS = 'https://raw.githubusercontent.com/KFruti88/clay-county-news/main/news_data.json';
 
-        async function loadLockedIntelligence() {
+        async function loadData() {
             const container = document.getElementById('news-text');
-            const keywords = ["louisville", "north clay", "cardinals", "indians"];
+            
+            // Inclusion: Must have these
+            const includeKeys = ["louisville", "north clay", "clay county"];
+            // Exclusion: Cannot have these (prevents other town news from leaking in)
+            const excludeKeys = ["flora", "clay city", "xenia", "sailor springs"];
 
             try {
-                // Fetch both sources
-                const [localRes, newsRes] = await Promise.all([
-                    fetch(LOCAL_DATA).then(res => res.ok ? res.json() : { updates: [] }),
-                    fetch(GLOBAL_NEWS).then(res => res.ok ? res.json() : [])
+                const responses = await Promise.allSettled([
+                    fetch(LOCAL_DATA).then(res => res.json()),
+                    fetch(GLOBAL_NEWS).then(res => res.json())
                 ]);
 
-                // --- GAS DATA (Local) ---
-                const gas = localRes.updates.find(i => i.name.includes('48026'));
-                if (gas) {
-                    const p = gas.name.split(',');
-                    document.getElementById('reg-price').innerText = p[2] ? p[2].trim() : '---';
-                    document.getElementById('diesel-price').innerText = p[3] ? p[3].trim() : '---';
+                // 1. Gas Data Processing
+                if (responses[0].status === "fulfilled") {
+                    const localRes = responses[0].value;
+                    const gas = (localRes.updates || []).find(i => i.name.includes('48026'));
+                    if (gas) {
+                        const p = gas.name.split(',');
+                        document.getElementById('reg-price').innerText = p[2] ? p[2].trim() : '---';
+                        document.getElementById('diesel-price').innerText = p[3] ? p[3].trim() : '---';
+                    }
                 }
 
-                // --- NEWS DATA (Global news_data.json) ---
-                // Filter the array of objects in news_data.json
-                const filtered = newsRes.filter(item => {
-                    // Check title and category for keywords
-                    const searchArea = `${item.title} ${item.category} ${item.description || ''}`.toLowerCase();
-                    return keywords.some(key => searchArea.includes(key));
-                });
+                // 2. Strict News Filtering
+                if (responses[1].status === "fulfilled") {
+                    const newsData = responses[1].value;
+                    
+                    const filtered = newsData.filter(item => {
+                        const content = `${item.name} ${item.category}`.toLowerCase();
+                        const matchesInclude = includeKeys.some(key => content.includes(key));
+                        const matchesExclude = excludeKeys.some(key => content.includes(key));
 
-                if (filtered.length > 0) {
-                    container.innerHTML = filtered.map(item => `
-                        <div class="news-card">
-                            <span style="color:var(--cardinal-red); font-weight: 900; font-size: 0.8em;">
-                                [${(item.category || 'GENERAL').toUpperCase()}]
-                            </span><br>
-                            <a href="${item.url || item.link}" target="_blank">${item.title}</a>
-                        </div>
-                    `).join('');
-                } else {
-                    container.innerHTML = "<p style='opacity:0.6;'>No local news matching keywords found in the master feed.</p>";
+                        return matchesInclude && !matchesExclude;
+                    });
+
+                    if (filtered.length > 0) {
+                        container.innerHTML = filtered.map(item => `
+                            <div class="news-card">
+                                <span style="color:var(--cardinal-red); font-weight: 900; font-size: 0.8em;">
+                                    [${(item.category || 'NEWS').toUpperCase()}]
+                                </span><br>
+                                <a href="${item.url}" target="_blank">${item.name}</a>
+                            </div>
+                        `).join('');
+                    } else {
+                        container.innerHTML = "<p style='opacity:0.5;'>No specific Louisville or Clay County news found.</p>";
+                    }
                 }
-
             } catch (e) {
-                console.error("Lock-in Sync Error:", e);
-                container.innerHTML = "<p style='color:red;'>Intelligence stream interrupted. Retrying...</p>";
+                container.innerHTML = "<p style='color:red;'>Connection error. Retrying...</p>";
             }
         }
-        loadLockedIntelligence();
+        loadData();
     </script>
 </body>
 </html>
