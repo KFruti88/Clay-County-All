@@ -1,0 +1,9 @@
+{
+  "town": "Louisville",
+  "mascot": "Cardinals",
+  "colors": ["#C41E3A", "#FFFFFF"],
+  "latest_news": "North Clay High School sports updates...",
+  "events": [
+    {"date": "2026-01-10", "title": "North Clay Home Game"}
+  ]
+}
