@@ -2,9 +2,8 @@ name: Louisville Sync Engine
 
 on:
   schedule:
-    # This runs exactly at 4 minutes and 44 minutes past every hour
     - cron: '4,44 * * * *'
-  workflow_dispatch: # Still allows you to click "Run workflow" manually
+  workflow_dispatch:
 
 jobs:
   build:
@@ -19,13 +18,21 @@ jobs:
           python-version: '3.10'
 
       - name: Install Dependencies
-        run: |
-          pip install requests
+        run: pip install requests
 
       - name: Run Louisville Sync Script
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
-        run: python louisville.py
+        # We tell it to look in the Towns/Louisville folder specifically
+        run: |
+          if [ -f "louisville.py" ]; then
+            python louisville.py
+          elif [ -f "Towns/Louisville/louisville.py" ]; then
+            python Towns/Louisville/louisville.py
+          else
+            echo "Error: louisville.py not found in root or Towns/Louisville/"
+            exit 1
+          fi
 
       - name: Commit and Push Changes
         run: |
