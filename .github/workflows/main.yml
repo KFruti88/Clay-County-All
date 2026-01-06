@@ -8,9 +8,13 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # Explicitly grants write access to the action
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          persist-credentials: true 
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -23,8 +27,8 @@ jobs:
       - name: Run Louisville Sync Script
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
-        # We tell it to look in the Towns/Louisville folder specifically
         run: |
+          # Robust check for the script location
           if [ -f "louisville.py" ]; then
             python louisville.py
           elif [ -f "Towns/Louisville/louisville.py" ]; then
@@ -36,8 +40,14 @@ jobs:
 
       - name: Commit and Push Changes
         run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
+          # Identify as the GitHub Action bot
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
           git add Towns/Louisville/data.json
-          git commit -m "Update Louisville Intelligence: $(date)" || echo "No changes to commit"
-          git push
+          # Only push if changes were actually made to data.json
+          if git diff --staged --quiet; then
+            echo "No changes in data.json"
+          else
+            git commit -m "Louisville Sync: $(date)"
+            git push
+          fi
