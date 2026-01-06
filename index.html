@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clay County Intelligence Dashboard</title>
+    <style>
+        /* General Page Styling */
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            text-align: center; 
+            padding: 50px 20px; 
+            background-color: #f4f4f4; 
+            margin: 0;
+        }
+        h1 { color: #333; margin-bottom: 10px; }
+        p.subtitle { color: #666; margin-bottom: 40px; }
+
+        /* Container for the buttons */
+        .portal-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        /* Common Button Style */
+        .town-card { 
+            display: block; 
+            width: 250px; 
+            padding: 30px 20px; 
+            background: white; 
+            text-decoration: none; 
+            color: #333; 
+            border-radius: 15px; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.2s, box-shadow 0.2s, background-color 0.2s;
+            border-top: 8px solid #333;
+        }
+
+        .town-card:hover { 
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+        }
+
+        /* Louisville Specific (Cardinal Red) */
+        .louisville { border-color: #C41E3A; }
+        .louisville:hover { background-color: #C41E3A; color: white; }
+
+        /* Flora Specific (Wolves Green) */
+        .flora { border-color: #2e7d32; }
+        .flora:hover { background-color: #2e7d32; color: white; }
+
+        /* Xenia/Clay City Specific (Tigers Orange/Wolves Purple) - Placeholders */
+        .coming-soon { border-color: #ccc; opacity: 0.6; cursor: not-allowed; }
+
+        h2 { margin: 10px 0 5px 0; }
+        span { font-size: 0.9em; font-style: italic; }
+    </style>
+</head>
+<body>
+
+    <h1>Clay County Intelligence</h1>
+    <p class="subtitle">Select a community portal to view local news, sports, and fuel data.</p>
+    
+    <div class="portal-container">
+        
+        <a href="Towns/Louisville/" class="town-card louisville">
+            <h2>Louisville</h2>
+            <span>Home of the Cardinals</span>
+        </a>
+
+        <a href="Towns/Flora/" class="town-card flora">
+            <h2>Flora</h2>
+            <span>Home of the Wolves</span>
+        </a>
+
+        <div class="town-card coming-soon">
+            <h2>Xenia</h2>
+            <span>Home of the Tigers</span>
+            <p>(Coming Soon)</p>
+        </div>
+
+    </div>
+
+</body>
+</html>
