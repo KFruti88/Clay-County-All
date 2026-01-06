@@ -7,114 +7,93 @@ from datetime import datetime
 
 # --- CONFIGURATION ---
 GITHUB_USER = "KFruti88"
-REPOS = ["Clay-County-Fuel", "clay-county-news", "Clay-County-All"]
+# Targeted sync for gas prices
+FUEL_REPO = "Clay-County-Fuel"
+FUEL_FILE = "gas_prices.csv"
 
-# Strict Town Filtering for local data.json
+# Global news repository to scan
+NEWS_REPOS = ["clay-county-news", "Clay-County-All"]
+
+# Strict Filtering Logic
 INCLUDE_KEYS = ["louisville", "north clay", "clay county"]
 EXCLUDE_KEYS = ["flora", "clay city", "xenia", "sailor springs"]
 
-# Specific ID for inside CSV files (Fuel data only)
+# Unique ID for the Louisville Casey's station
 GAS_STATION_ID = "48026" 
-
 ACCESS_TOKEN = os.getenv("GH_TOKEN") 
 TOWN_PATH = "Towns/Louisville"
 
-def search_csv_content(file_url):
-    """Downloads a CSV and looks specifically for the Casey's Station ID."""
+def get_locked_gas_prices():
+    """Syncs directly with the raw CSV file in the Fuel repository."""
+    url = f"https://raw.githubusercontent.com/{GITHUB_USER}/{FUEL_REPO}/main/{FUEL_FILE}"
+    # Use headers for private repos or rate-limit protection
     headers = {"Authorization": f"token {ACCESS_TOKEN}"} if ACCESS_TOKEN else {}
+    
     try:
-        response = requests.get(file_url, headers=headers)
-        if response.status_code != 200:
-            return None
-
-        csv_raw = response.text
-        reader = csv.reader(io.StringIO(csv_raw))
-        
-        for row in reader:
-            row_str = ",".join(row)
-            # Logic: We need the raw comma-separated string for the JS split(',') to work
-            if GAS_STATION_ID in row_str:
-                return row_str # Returns "48026,Casey's,3.29,3.89"
+        response = requests.get(url, headers=headers)
+        if response.status_code == 200:
+            # Parse CSV content from the web response
+            reader = csv.reader(io.StringIO(response.text))
+            for row in reader:
+                # Lock onto the row matching your specific station ID
+                if row and row[0].strip() == GAS_STATION_ID:
+                    # Return the raw row for the JS .split(',') logic
+                    return ",".join(row) 
     except Exception as e:
-        print(f"Error reading CSV content: {e}")
+        print(f"Error syncing gas_prices.csv: {e}")
     return None
 
-def scan_repository(repo_name):
-    print(f"--- Deep Scanning {repo_name} ---")
-    url = f"https://api.github.com/repos/{GITHUB_USER}/{repo_name}/contents/"
+def scan_filtered_news():
+    """Scans news repos using strict inclusion/exclusion rules."""
+    found_news = []
     headers = {"Authorization": f"token {ACCESS_TOKEN}"} if ACCESS_TOKEN else {}
     
-    response = requests.get(url, headers=headers)
-    if response.status_code != 200:
-        return []
-
-    found_items = []
-    contents = response.json()
-    
-    for item in contents:
-        if item['type'] == 'dir':
-            continue
-            
-        name_lower = item['name'].lower()
-        
-        # 1. Broad Filename Search with Strict Exclusion
-        if any(key in name_lower for key in INCLUDE_KEYS):
-            # Check if it should be excluded
-            if any(ex in name_lower for ex in EXCLUDE_KEYS):
-                continue # Skip Flora/Xenia news even if it says "Clay County"
+    for repo in NEWS_REPOS:
+        api_url = f"https://api.github.com/repos/{GITHUB_USER}/{repo}/contents/"
+        res = requests.get(api_url, headers=headers)
+        if res.status_code == 200:
+            for item in res.json():
+                name_lower = item['name'].lower()
                 
-            category = "General"
-            if "fuel" in repo_name.lower() or "gas" in name_lower:
-                category = "Fuel"
-            
-            found_items.append({
-                "category": category, 
-                "name": item['name'], 
-                "url": item['html_url']
-            })
-        
-        # 2. Deep CSV Search (Specifically for the Gas Widget)
-        elif name_lower.endswith('.csv'):
-            gas_info = search_csv_content(item['download_url'])
-            if gas_info:
-                found_items.append({
-                    "category": "Fuel", 
-                    "name": gas_info, 
-                    "url": item['html_url']
-                })
-            
-    return found_items
+                # Logic: Must have Louisville/North Clay but MUST NOT have Flora/Xenia
+                is_included = any(k in name_lower for k in INCLUDE_KEYS)
+                is_excluded = any(ex in name_lower for ex in EXCLUDE_KEYS)
+                
+                if is_included and not is_excluded:
+                    found_news.append({
+                        "category": "General",
+                        "name": item['name'],
+                        "url": item['html_url']
+                    })
+    return found_news
 
 if __name__ == "__main__":
-    # Ensure the Towns/Louisville directory exists
+    # Ensure local town directory exists
     os.makedirs(TOWN_PATH, exist_ok=True)
 
-    all_results = []
-    
-    for repo in REPOS:
-        results = scan_repository(repo)
-        if results:
-            all_results.extend(results)
+    # Execute Locked Sync
+    gas_row = get_locked_gas_prices()
+    news_items = scan_filtered_news()
 
-    # --- SAVE OUTPUT: data.json (Optimized for the Glossy Website) ---
-    # We wrap results in an "updates" key so JS can find it
-    json_data = {
+    # Consolidate Updates
+    all_updates = []
+    if gas_row:
+        # High priority entry for the digital sign widget
+        all_updates.append({
+            "category": "Fuel", 
+            "name": gas_row, 
+            "url": f"https://github.com/KFruti88/{FUEL_REPO}/blob/main/{FUEL_FILE}"
+        })
+    all_updates.extend(news_items)
+
+    # Save finalized data.json
+    output_data = {
         "town": "Louisville",
-        "last_updated": datetime.now().strftime("%Y-%m-%d %H:%M"),
-        "updates": all_results
+        "last_sync": datetime.now().strftime("%Y-%m-%d %H:%M"),
+        "updates": all_updates
     }
     
-    json_path = os.path.join(TOWN_PATH, "data.json")
-    with open(json_path, "w") as f:
-        json.dump(json_data, f, indent=4)
+    with open(os.path.join(TOWN_PATH, "data.json"), "w") as f:
+        json.dump(output_data, f, indent=4)
 
-    # --- SAVE OUTPUT: LOUISVILLE_REPORT.md (For GitHub Logs) ---
-    markdown_lines = [f"# Louisville Intelligence Log - {json_data['last_updated']}\n"]
-    for item in all_results:
-        markdown_lines.append(f"- **[{item['category']}]** {item['name']} [View]({item['url']})")
-    
-    md_path = os.path.join(TOWN_PATH, "LOUISVILLE_REPORT.md")
-    with open(md_path, "w") as f:
-        f.write("\n".join(markdown_lines))
-
-    print(f"Successfully processed. Files saved to {TOWN_PATH}")
+    print(f"Sync Complete: {TOWN_PATH}/data.json is locked and updated.")
