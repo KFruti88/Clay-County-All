@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="style.css">
+    <title>Louisville Portal</title>
+</head>
+<body>
+    <header>
+        <h1 id="town-name">Louisville, IL</h1>
+        <p>Home of the North Clay Cardinals</p>
+    </header>
+
+    <main id="content">
+        <div class="news-card">
+            <h2>Latest News</h2>
+            <p id="news-text">Loading news...</p>
+        </div>
+    </main>
+
+    <script>
+        // This script pulls data from your Louisville/data.json file
+        fetch('data.json')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('news-text').innerText = data.latest_news;
+            })
+            .catch(error => console.error('Error loading data:', error));
+    </script>
+</body>
+</html>
