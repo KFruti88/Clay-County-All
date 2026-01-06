@@ -6,9 +6,9 @@
     <title>Louisville Community Portal</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        /* CSS from your 'looks.all' master file */
+        /* CSS variables from your 'looks.all' master file */
         :root {
-            --town-primary: #C41E3A; /* Louisville Red from your town-colors */
+            --town-primary: #C41E3A; 
             --town-secondary: #000000;
             --bg-light: #f8f9fa;
             --shadow: 0 4px 12px rgba(0,0,0,0.15);
@@ -49,6 +49,97 @@
             margin: auto;
         }
 
+        /* --- High-Gloss Station Sign Styling --- */
+        .gas-sign {
+            background: linear-gradient(145deg, #1a1a1a, #000000);
+            border: 2px solid #444;
+            border-radius: 15px;
+            padding: 0;
+            max-width: 400px;
+            margin: 0 auto 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4), inset 0 1px 1px rgba(255,255,255,0.2);
+            overflow: hidden;
+            font-family: 'Arial Black', sans-serif;
+        }
+
+        .sign-top {
+            background: #fff;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border-bottom: 4px solid #C41E3A;
+        }
+
+        .sign-logo {
+            height: 50px;
+            width: auto;
+            margin-bottom: 5px;
+        }
+
+        .sign-location {
+            color: #333;
+            font-size: 0.7em;
+            letter-spacing: 2px;
+            font-weight: bold;
+        }
+
+        .sign-body {
+            padding: 20px;
+            background: radial-gradient(circle at center, #333 0%, #000 100%);
+        }
+
+        .fuel-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            position: relative;
+        }
+
+        .fuel-row::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 50%;
+            background: linear-gradient(to bottom, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 100%);
+            pointer-events: none;
+        }
+
+        .fuel-info { display: flex; flex-direction: column; }
+        .fuel-name { color: #fff; font-size: 1.1em; }
+        .unleaded .fuel-name { color: #ffeb3b; }
+        .diesel .fuel-name { color: #4caf50; }
+        .fuel-octane { color: #aaa; font-size: 0.6em; }
+
+        .fuel-price-display { display: flex; align-items: flex-start; color: #fff; }
+        .digital-value {
+            font-size: 2.8em;
+            line-height: 1;
+            letter-spacing: -2px;
+            text-shadow: 0 0 10px rgba(255,255,255,0.2);
+        }
+
+        .nine-tenths {
+            font-size: 1em;
+            margin-top: 5px;
+            margin-left: 2px;
+            border-bottom: 1px solid #fff;
+        }
+
+        .sign-footer {
+            background: #C41E3A;
+            color: white;
+            text-align: center;
+            font-size: 0.6em;
+            padding: 5px;
+            letter-spacing: 1px;
+        }
+
+        /* --- News Section --- */
         #news-section {
             background: white;
             padding: 30px;
@@ -66,9 +157,7 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
 
-        .news-card:hover {
-            transform: translateX(10px);
-        }
+        .news-card:hover { transform: translateX(10px); }
 
         .category-tag {
             color: var(--town-primary);
@@ -103,6 +192,38 @@
     </header>
 
     <main>
+        <div class="gas-sign">
+            <div class="sign-top">
+                <img src="https://github.com/KFruti88/Clay-County-Fuel/raw/main/images/caseys.png" alt="Casey's" class="sign-logo">
+                <div class="sign-location">LOUISVILLE #48026</div>
+            </div>
+            
+            <div class="sign-body">
+                <div class="fuel-row unleaded">
+                    <div class="fuel-info">
+                        <span class="fuel-name">UNLEADED</span>
+                        <span class="fuel-octane">87</span>
+                    </div>
+                    <div class="fuel-price-display">
+                        <span id="reg-price" class="digital-value">---</span>
+                        <span class="nine-tenths">9</span>
+                    </div>
+                </div>
+
+                <div class="fuel-row diesel">
+                    <div class="fuel-info">
+                        <span class="fuel-name">DIESEL</span>
+                        <span class="fuel-octane">ULSD</span>
+                    </div>
+                    <div class="fuel-price-display">
+                        <span id="diesel-price" class="digital-value">---</span>
+                        <span class="nine-tenths">9</span>
+                    </div>
+                </div>
+            </div>
+            <div id="gas-updated" class="sign-footer">AWAITING SCAN...</div>
+        </div>
+
         <div id="news-section">
             <h2 style="border-bottom: 2px solid #eee; padding-bottom: 10px;">Community Intelligence Feed</h2>
             <div id="news-text">Gathering data from repositories...</div>
@@ -110,16 +231,15 @@
     </main>
 
     <script>
-        /** * Logic inspired by your 'Promise.all' file
-         * This version can fetch from multiple sources if needed 
-         **/
-        const dataSources = ['data.json']; // You can add more JSON paths here later
+        const dataSources = ['data.json'];
 
         async function loadIntelligence() {
             const container = document.getElementById('news-text');
+            const regDisplay = document.getElementById('reg-price');
+            const dieselDisplay = document.getElementById('diesel-price');
+            const statusFooter = document.getElementById('gas-updated');
             
             try {
-                // Promise.all ensures all data sources are checked before rendering
                 const results = await Promise.all(
                     dataSources.map(url => fetch(url).then(res => {
                         if(!res.ok) throw new Error(`Source ${url} failed`);
@@ -127,11 +247,24 @@
                     }))
                 );
 
-                // Combine updates from all sources (if multiple)
                 const allUpdates = results.flatMap(data => data.updates || []);
                 
+                // --- Process Gas Station Data ---
+                const gasEntry = allUpdates.find(item => item.name.includes('48026'));
+                if (gasEntry) {
+                    const parts = gasEntry.name.split(',');
+                    // logic: StationID[0], Name[1], Reg[2], Diesel[3]
+                    regDisplay.innerText = parts[2] ? parts[2].trim() : "---";
+                    dieselDisplay.innerText = parts[3] ? parts[3].trim() : "---";
+                    statusFooter.innerText = `SYNCED: ${new Date().toLocaleDateString()}`;
+                }
+
+                // --- Render News Cards ---
                 if (allUpdates.length > 0) {
-                    container.innerHTML = allUpdates.map(item => `
+                    // We filter out the raw station data entry from the news feed for a cleaner look
+                    const newsOnly = allUpdates.filter(item => !item.name.includes('48026'));
+                    
+                    container.innerHTML = newsOnly.map(item => `
                         <div class="news-card">
                             <span class="category-tag">[${item.category}]</span><br>
                             <a href="${item.url}" target="_blank" style="color: #333; text-decoration: none; font-size: 1.2em; font-weight: 500;">
@@ -144,7 +277,7 @@
                 }
             } catch (error) {
                 console.error('Master Logic Error:', error);
-                container.innerHTML = "<p style='color:red;'>System Sync in Progress... please refresh shortly.</p>";
+                container.innerHTML = "<p style='color:red;'>System Sync in Progress...</p>";
             }
         }
 
