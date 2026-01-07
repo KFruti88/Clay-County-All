@@ -1,1 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>#SMLC Menu Bar</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
+    <nav class="smlc-nav" id="mainNav">
+        <div class="logo">#SMLC <span id="activeTownName"></span></div>
+        
+        <ul class="nav-links">
+            <li><a href="#" class="nav-item">Home</a></li>
+            <li class="dropdown" id="menuTrigger">
+                <span class="nav-item">Select Town ▾</span>
+                <div class="dropdown-menu" id="dropdownContent">
+                    <a href="#" onclick="setTown('Flora')">Flora</a>
+                    <a href="#" onclick="setTown('Louisville')">Louisville</a>
+                    <a href="#" onclick="setTown('North Clay')">North Clay</a>
+                    <a href="#" onclick="setTown('Clay City')">Clay City</a>
+                    <a href="#" onclick="setTown('Xenia')">Xenia</a>
+                    <a href="#" onclick="setTown('Sailor Springs')">Sailor Springs</a>
+                    <a href="#" onclick="setTown('Clay County')">Clay County</a>
+                </div>
+            </li>
+        </ul>
+    </nav>
+
+    <main class="content">
+        <h1>Welcome to Clay County</h1>
+        <p>Use the menu above to switch between town color profiles.</p>
+    </main>
+
+    <script src="java.script"></script>
+</body>
+</html>
