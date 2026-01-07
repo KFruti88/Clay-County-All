@@ -1,1 +1,40 @@
+:root {
+    --master-bg: #121212;
+    --card-bg: #ffffff;
+}
 
+body {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    background-color: var(--master-bg);
+}
+
+/* Section Containers */
+.master-section {
+    width: 90%;
+    margin: 40px auto;
+    border-radius: 12px;
+    overflow: hidden;
+    background: var(--card-bg);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+/* Calendar Grid Styles */
+.calendar-container {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    background: #eee;
+    gap: 1px;
+}
+
+.calendar-day {
+    height: 100px;
+    background: #fff;
+    padding: 10px;
+}
+
+/* Reversal Logic (Applied via Classes) */
+.reverse-mode {
+    background-color: var(--town-text);
+    color: var(--town-bg);
+}
