@@ -1,0 +1,22 @@
+{
+  "towns": {
+    "Louisville": {
+      "bg": "#010101",
+      "text": "#eb1c24",
+      "description": "Home of the Leopards. Official Portal for Louisville information."
+    },
+    "Clay County": {
+      "bg": "#333333",
+      "text": "#ffffff",
+      "description": "Central hub for all county-wide services."
+    }
+  },
+  "fuelData": [
+    {"station": "Shell", "price": "3.29"},
+    {"station": "BP", "price": "3.35"}
+  ],
+  "calendarEvents": [
+    {"date": "2026-01-15", "title": "Town Hall Meeting"},
+    {"date": "2026-01-20", "title": "Basketball Finals"}
+  ]
+}
