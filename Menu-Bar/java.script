@@ -1,0 +1,31 @@
+const townColors = {
+    "Flora": { bg: "#0c0b82", text: "#fe4f00" },
+    "Louisville": { bg: "#010101", text: "#eb1c24" },
+    "North Clay": { bg: "#010101", text: "#eb1c24" },
+    "Clay City": { bg: "#0c30f0", text: "#8a8a88" },
+    "Xenia": { bg: "#000000", text: "#fdb813" },
+    "Sailor Springs": { bg: "#000000", text: "#a020f0" },
+    "Clay County": { bg: "#333333", text: "#ffffff" }
+};
+
+function setTown(townName) {
+    const theme = townColors[townName];
+    if (theme) {
+        document.documentElement.style.setProperty('--town-bg', theme.bg);
+        document.documentElement.style.setProperty('--town-text', theme.text);
+    }
+}
+
+// Example: Set default town to Flora on load
+setTown('Flora');
+
+// Menu Click-to-open logic
+const trigger = document.getElementById('menuTrigger');
+const menu = document.getElementById('dropdownContent');
+
+trigger.addEventListener('click', (e) => {
+    e.stopPropagation();
+    menu.classList.toggle('show');
+});
+
+window.onclick = () => menu.classList.remove('show');
