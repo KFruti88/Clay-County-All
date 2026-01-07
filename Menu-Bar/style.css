@@ -1,1 +1,87 @@
+:root {
+    /* These will be updated dynamically by JS */
+    --town-bg: #333333; 
+    --town-text: #ffffff;
+}
 
+body {
+    margin: 0;
+    padding-top: 80px;
+    font-family: 'Segoe UI', Roboto, sans-serif;
+}
+
+/* --- MAIN BAR --- */
+.smlc-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 65px;
+    background-color: var(--town-bg);
+    color: var(--town-text);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 30px;
+    box-sizing: border-box;
+    z-index: 9999;
+    transition: background-color 0.5s ease; /* Smooth transition when switching towns */
+}
+
+.logo {
+    font-size: 1.4rem;
+    font-weight: 800;
+}
+
+.nav-links {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+/* --- THE REVERSAL LOGIC --- */
+.nav-item {
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    height: 65px;
+    color: var(--town-text);
+    text-decoration: none;
+}
+
+/* Hovering reverses the colors exactly as requested */
+.nav-item:hover {
+    background-color: var(--town-text); /* Bg becomes the text color */
+    color: var(--town-bg);             /* Text becomes the bg color */
+}
+
+/* --- DROPDOWN SYSTEM --- */
+.dropdown-menu {
+    display: none; 
+    position: absolute;
+    top: 65px; 
+    right: 0;
+    background-color: var(--town-bg);
+    min-width: 180px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.dropdown-menu.show {
+    display: block;
+}
+
+.dropdown-menu a {
+    display: block;
+    padding: 15px 20px;
+    color: var(--town-text);
+    text-decoration: none;
+}
+
+.dropdown-menu a:hover {
+    background-color: var(--town-text);
+    color: var(--town-bg);
+}
