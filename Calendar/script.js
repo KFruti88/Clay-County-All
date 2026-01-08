@@ -5,7 +5,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
 async function loadHubData() {
     try {
-        // Fetching the Master Data (Town colors, News, etc.)
         const response = await fetch('data.json');
         const data = await response.json();
 
@@ -13,7 +12,6 @@ async function loadHubData() {
         applyTownStyles(data.towns);
 
         // 2. Load the Calendar Module
-        // We call the specific calendar fetcher here
         loadCalendarEvents();
 
     } catch (error) {
@@ -21,7 +19,6 @@ async function loadHubData() {
     }
 }
 
-// Handles the Visual Effect for the different town sections
 function applyTownStyles(towns) {
     if (towns.Louisville) {
         const louSection = document.getElementById('louisville-section');
@@ -30,7 +27,6 @@ function applyTownStyles(towns) {
             louSection.style.color = towns.Louisville.text;
         }
     }
-    // Add other towns (Flora, Xenia, etc.) here as needed
 }
 
 // CALENDAR MODULE LOGIC
@@ -38,9 +34,7 @@ async function loadCalendarEvents() {
     const calendarContainer = document.getElementById('calendar-container');
     
     try {
-        // Fetching from your specific Calendar JSON
         const response = await fetch('https://kfruti88.github.io/Clay-County-All/Calendar/calendar_data.json');
-        
         if (!response.ok) throw new Error('Calendar data not found');
 
         const events = await response.json();
@@ -58,29 +52,51 @@ function renderCalendar(events) {
     const container = document.getElementById('calendar-container');
     if (!container) return;
 
-    container.innerHTML = ''; // Clear loading state
+    container.innerHTML = ''; 
 
     // Sort: Closest date first
     events.sort((a, b) => new Date(a.date) - new Date(b.date));
 
     events.forEach(event => {
         const eventCard = document.createElement('div');
-        eventCard.className = 'calendar-card';
+        eventCard.className = 'event-card-row'; // Using your sideways template class
         
-        // This keeps your specific "Portal" visual effect
+        // Find image in description or use fallback
+        const imgMatch = (event.description || "").match(/\bhttps?:\/\/\S+\.(?:png|jpg|jpeg|gif)\b/i);
+        const imgUrl = imgMatch ? imgMatch[0] : 'https://via.placeholder.com/180?text=Event';
+        const cleanDesc = (event.description || "No details provided.").replace(imgUrl, '').trim();
+
+        // Template logic: Adding onclick to open the Single Event View
+        eventCard.onclick = () => openEventDetails(event.title, event.date, imgUrl, cleanDesc);
+
         eventCard.innerHTML = `
-            <div class="event-header">
-                <div class="event-info">
-                    <h3 class="event-title">${event.title}</h3>
-                    <p class="event-meta">
-                        <strong>Date:</strong> ${event.date} | <strong>Time:</strong> ${event.time || 'TBA'}
-                    </p>
+            <img src="${imgUrl}" class="event-image-slot">
+            <div class="event-details-slot">
+                <h2 class="event-title">${event.title}</h2>
+                <p class="event-desc-snippet">${cleanDesc.substring(0, 150)}...</p>
+                <div class="event-time-tag">
+                    📅 ${event.date} | ⌚ ${event.time || 'TBA'}
                 </div>
-                <span class="event-location">${event.location || 'Clay County'}</span>
             </div>
-            <div class="event-desc">${event.description || 'No description provided.'}</div>
         `;
         
         container.appendChild(eventCard);
     });
+}
+
+/* This function opens the "Single Event" view (The Modal) */
+function openEventDetails(title, date, img, description) {
+    document.getElementById('modal-title').innerText = title;
+    document.getElementById('modal-date').innerText = date;
+    document.getElementById('modal-detail-date').innerText = date;
+    document.getElementById('modal-img').src = img;
+    document.getElementById('modal-desc').innerText = description;
+
+    // Show the pop-up
+    document.getElementById('event-modal').style.display = 'flex';
+}
+
+/* This function closes the view */
+function closeEvent() {
+    document.getElementById('event-modal').style.display = 'none';
 }
