@@ -12,7 +12,6 @@
     <style>
         /* --- GLOBAL & HUB STYLING --- */
         body { margin: 0; background: #0f0f0f; font-family: 'Playfair Display', serif; color: #fff; overflow-x: hidden; }
-        
         .upcoming-events-hub { max-width: 900px; margin: 40px auto; padding: 10px; }
 
         /* THE CARD: Text Left, Image Right */
@@ -30,23 +29,16 @@
             cursor: pointer;
             transition: transform 0.3s ease;
         }
-
         .event-card-row:hover { transform: scale(1.01); background: rgba(255, 255, 255, 0.1); }
-
         .event-details-slot { flex: 1; padding-right: 20px; }
-        .event-details-slot h2 { margin: 5px 0; font-size: 1.5rem; color: #4db8ff; font-family: sans-serif; }
-        .event-details-slot p { color: #ccc; font-size: 0.95rem; font-family: 'Georgia', serif; line-height: 1.4; }
-
+        .event-details-slot h2 { margin: 5px 0; font-size: 1.5rem; color: #4db8ff; font-family: sans-serif; text-align: left; }
+        .event-details-slot p { color: #ccc; font-size: 0.95rem; font-family: 'Georgia', serif; line-height: 1.4; text-align: left;}
         .event-image-slot { width: 200px; height: 120px; min-width: 200px; border-radius: 10px; object-fit: cover; border: 1px solid rgba(255, 255, 255, 0.2); }
+        .event-time-tag { color: #ffcc00; font-weight: bold; font-size: 0.85rem; text-transform: uppercase; font-family: sans-serif; display: block; margin-bottom: 5px; text-align: left;}
 
-        .event-time-tag { color: #ffcc00; font-weight: bold; font-size: 0.85rem; text-transform: uppercase; font-family: sans-serif; }
-
-        /* MODAL STYLING (Single Event View) */
+        /* MODAL STYLING */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 20000; justify-content: center; align-items: center; backdrop-filter: blur(10px); }
-        .modal-content { width: 90%; max-width: 800px; max-height: 90vh; overflow-y: auto; padding: 40px; position: relative; background: rgba(20, 20, 20, 0.95); border-radius: 20px; border: 1px solid #333; text-align: left; }
-        .event-title-main { font-size: 2.5rem; margin-bottom: 5px; color: #fff; }
-        .event-date-sub { font-size: 1.2rem; color: #aaa; margin-bottom: 25px; }
-        .event-hero-container img { width: 100%; max-height: 400px; object-fit: contain; border-radius: 10px; margin-bottom: 20px; }
+        .modal-content { width: 90%; max-width: 800px; max-height: 90vh; overflow-y: auto; padding: 40px; position: relative; background: rgba(20, 20, 20, 0.95); border-radius: 20px; border: 1px solid #333; }
         .close-btn { position: absolute; top: 20px; right: 25px; font-size: 2rem; color: #fff; cursor: pointer; }
 
         /* Hide Calendar Defaults */
@@ -64,17 +56,12 @@
 <div id="event-modal" class="modal-overlay" onclick="closeEvent()">
     <div class="modal-content" onclick="event.stopPropagation()">
         <span class="close-btn" onclick="closeEvent()">&times;</span>
-        <h1 id="modal-title" class="event-title-main"></h1>
-        <p id="modal-date" class="event-date-sub"></p>
-        <div class="event-hero-container">
-            <img id="modal-img" src="">
+        <h1 id="modal-title" style="font-size: 2.5rem; color:#fff;"></h1>
+        <p id="modal-date" style="color:#aaa;"></p>
+        <div style="width:100%; text-align:center;">
+            <img id="modal-img" src="" style="max-width:100%; border-radius:10px;">
         </div>
-        <div class="event-footer-content" style="color: #ddd; font-family: 'Georgia', serif;">
-            <p id="modal-desc"></p>
-            <hr style="border: 0; border-top: 1px solid #444; margin: 20px 0;">
-            <h3>DETAILS</h3>
-            <p><strong>Date:</strong> <span id="modal-detail-date"></span></p>
-        </div>
+        <p id="modal-desc" style="color:#ddd; font-family:Georgia; margin-top:20px;"></p>
     </div>
 </div>
 
@@ -84,16 +71,36 @@
         var calendar = new FullCalendar.Calendar(calendarEl, {
             initialView: 'listMonth',
             googleCalendarApiKey: 'AIzaSyBZ0TIaGkEQDYLFeIfC0_zTygolYEZd3Oc',
-            events: 'ceab82d01e29c237da2e761555f2d2c2da76431b94e0def035ff04410e2cd71d@group.calendar.google.com',
-            
-            eventDataTransform: function(eventData) {
-                // This ensures we only handle events that haven't passed
-                return eventData;
-            },
+            eventSources: [
+                {
+                    // Live Google Calendar
+                    googleCalendarId: 'ceab82d01e29c237da2e761555f2d2c2da76431b94e0def035ff04410e2cd71d@group.calendar.google.com'
+                },
+                {
+                    // HARDCODED TEST EVENTS
+                    events: [
+                        {
+                            title: "🐺 Pack Community Meetup",
+                            start: "2026-01-15T18:00:00",
+                            description: "Testing the sideways layout. This text should be on the left and the image on the right! https://werewolf.ourflora.com/wp-content/uploads/2025/12/WolfPack-Friends.png"
+                        },
+                        {
+                            title: "🏫 School Returns",
+                            start: "2026-01-06T08:00:00",
+                            description: "Back to school test event. Checking the detailed modal view. https://werewolf.ourflora.com/wp-content/uploads/2025/12/image_2025-12-22_222907634.png"
+                        },
+                        {
+                            title: "🚜 Farm Consignment Sale",
+                            start: "2026-01-19T09:00:00",
+                            description: "Mt. Erie Ruritan Farm Consignment Sale test. No used tires! https://raw.githubusercontent.com/KFruti88/Clay-County-Fuel/main/images/mach1.png"
+                        }
+                    ]
+                }
+            ],
 
             loading: function(isLoading) {
                 if (!isLoading) {
-                    // Once loaded, we manually trim to the top 3 events
+                    // Limits to top 3 events
                     const eventNodes = document.querySelectorAll('.fc-list-event');
                     eventNodes.forEach((node, index) => {
                         if (index >= 3) node.style.display = 'none';
@@ -109,11 +116,11 @@
 
                 let customRow = document.createElement('div');
                 customRow.className = 'event-card-row';
-                customRow.onclick = () => openEventDetails(arg.event.title, arg.event.start.toLocaleDateString('en-US', {month:'long', day:'numeric'}), imgUrl, cleanDesc);
+                customRow.onclick = () => openEventDetails(arg.event.title, arg.event.start.toLocaleDateString(), imgUrl, cleanDesc);
                 
                 customRow.innerHTML = `
                     <div class="event-details-slot">
-                        <div class="event-time-tag">📅 ${arg.event.start.toLocaleDateString()}</div>
+                        <span class="event-time-tag">📅 ${arg.event.start.toLocaleDateString()}</span>
                         <h2>${arg.event.title}</h2>
                         <p>${cleanDesc.substring(0, 100)}...</p>
                     </div>
@@ -130,7 +137,6 @@
         document.getElementById('modal-date').innerText = date;
         document.getElementById('modal-img').src = img || 'https://via.placeholder.com/800x400?text=Clay+County';
         document.getElementById('modal-desc').innerText = description;
-        document.getElementById('modal-detail-date').innerText = date;
         document.getElementById('event-modal').style.display = 'flex';
     }
 
