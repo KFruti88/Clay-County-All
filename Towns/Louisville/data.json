@@ -1,5 +1,11 @@
 {
     "town": "Louisville",
-    "last_sync": "2026-01-14 05:53",
-    "updates": []
+    "last_sync": "2026-01-14 06:40",
+    "updates": [
+        {
+            "category": "General",
+            "name": "Clay County Images",
+            "url": "https://github.com/KFruti88/Clay-County-All/blob/main/Clay%20County%20Images"
+        }
+    ]
 }
