@@ -162,7 +162,7 @@ function loadProfile(data) {
                 </div>
             </div>
             ${biz.Bio ? `<div class="info-section" style="margin-top:30px;"><h3>About Our Business</h3><div class="bio-box">${biz.Bio}</div></div>` : ''}
-            ${biz.Address ? `<div class="info-section" style="margin-top:30px;"><h3>Location</h3><div class="map-box"><iframe width="100%" height="100%" frameborder="0" style="border:0" src="https://maps.google.com/maps?q=${encodeURIComponent(biz.Address + " " + (biz.Town || "") + " IL")}&output=embed" allowfullscreen></iframe></div></div>` : ''}
+            ${biz.Address ? `<div class="info-section" style="margin-top:30px;"><h3>Location</h3><div class="map-box"><iframe width="100%" height="100%" frameborder="0" style="border:0" src="https://www.google.com/maps?q=${encodeURIComponent(biz.Address + ' ' + (biz.Town || '') + ' IL')}&output=embed" allowfullscreen></iframe></div></div>` : ''}
         </div>`;
 }
 
