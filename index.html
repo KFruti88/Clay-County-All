@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clay County Global Portal</title>
+    <style>
+        :root {
+            --gh-dark: #0d1117;
+            --gh-header: #161b22;
+            --gh-border: #30363d;
+            --gh-blue: #58a6ff;
+            --gh-green: #238636;
+            --nav-height: 100px;
+        }
+
+        body, html { margin: 0; padding: 0; height: 100%; background: var(--gh-dark); font-family: -apple-system, sans-serif; overflow: hidden; color: white; }
+
+        /* THE GLOBAL HEADER */
+        header {
+            height: var(--nav-height);
+            background: var(--gh-header);
+            border-bottom: 1px solid var(--gh-border);
+            display: flex; flex-direction: column; justify-content: space-between;
+            position: fixed; top: 0; width: 100%; z-index: 1000;
+        }
+
+        .top-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 25px; }
+        .branding { font-weight: 800; font-size: 1.2rem; color: var(--gh-blue); letter-spacing: 1.5px; }
+        .clock { font-family: monospace; color: #8b949e; font-size: 0.9rem; }
+
+        /* THE SYNCED NAVIGATION */
+        nav { display: flex; gap: 8px; padding: 0 25px 10px 25px; overflow-x: auto; }
+        .nav-item {
+            background: #21262d; border: 1px solid var(--gh-border); color: #c9d1d9;
+            padding: 8px 15px; border-radius: 6px; font-size: 13px; font-weight: 600;
+            text-decoration: none; cursor: pointer; transition: 0.2s; white-space: nowrap;
+        }
+        .nav-item:hover { background: #30363d; border-color: #8b949e; }
+        .nav-item.active { background: var(--gh-green); border-color: #2ea043; color: white; }
+
+        /* THE ACTIVE CONTENT VIEWPORT */
+        #content-frame-container {
+            position: absolute; top: var(--nav-height); left: 0; width: 100%;
+            height: calc(100% - var(--nav-height));
+            background: #f6f8fa; /* Light background for your sub-pages */
+        }
+        iframe { width: 100%; height: 100%; border: none; }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="top-row">
+        <div class="branding">CLAY COUNTY GLOBAL</div>
+        <div class="clock" id="live-clock"></div>
+    </div>
+    <nav>
+        <a class="nav-item active" onclick="sync('./bulletin/index.html', this)">BULLETIN</a>
+        <a class="nav-item" onclick="sync('./news/index.html', this)">NEWS</a>
+        <a class="nav-item" onclick="sync('./directory/index.html', this)">DIRECTORY</a>
+        <a class="nav-item" onclick="sync('./fuel/index.html', this)">FUEL TRACKER</a>
+        <a class="nav-item" onclick="sync('./amazon/index.html', this)">SHOP</a>
+    </nav>
+</header>
+
+<div id="content-frame-container">
+    <iframe id="main-view" name="main-view" src="./bulletin/index.html"></iframe>
+</div>
+
+<script>
+    // This function "Syncs" the iframe to the folder you click
+    function sync(path, btn) {
+        document.getElementById('main-view').src = path;
+        
+        // Update active button look
+        document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+        btn.classList.add('active');
+    }
+
+    // Dynamic Clock
+    function updateClock() {
+        const now = new Date();
+        document.getElementById('live-clock').innerText = now.toLocaleString();
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+</script>
+
+</body>
+</html>
