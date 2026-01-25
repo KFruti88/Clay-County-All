@@ -1,0 +1,137 @@
+<style>
+    .shop-container {
+        display: flex;
+        flex-wrap: wrap; 
+        gap: 20px;
+        justify-content: center;
+        padding: 20px;
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        border-radius: 15px;
+    }
+    .product-card {
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        width: 250px;
+        padding: 15px;
+        text-align: center;
+        transition: 0.3s;
+        background-color: #fff;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+    .product-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+    .product-card img { max-width: 100%; border-radius: 5px; height: 180px; object-fit: contain; }
+    .product-card h3 { font-size: 1.1em; color: #333; margin: 10px 0; }
+    .product-card p { font-size: 0.85em; color: #666; line-height: 1.4; flex-grow: 1; }
+    .buy-btn {
+        background: #FF9900;
+        color: white !important; 
+        padding: 12px;
+        text-decoration: none;
+        border-radius: 5px;
+        display: block;
+        margin-top: 15px;
+        font-weight: bold;
+        font-size: 0.9em;
+    }
+    .disclosure { font-size: 11px; color: #777; margin-top: 20px; text-align: center; width: 100%; }
+</style>
+
+<div class="shop-container" id="product-grid">
+    <div class="product-card filter-item emergency">
+        <img src="https://m.media-amazon.com/images/I/71IIGG9bP2L._AC_SL1500_.jpg" alt="Portable Jump Starter">
+        <h3>Portable Jump Starter</h3>
+        <p>Cold weather kills batteries. Jump-start your car solo in seconds.</p>
+        <a href="https://amzn.to/4jSSeFT" class="buy-btn" target="_blank">Check Price on Amazon</a>
+    </div>
+
+    <div class="product-card filter-item emergency">
+        <img src="https://m.media-amazon.com/images/I/71eCGdR7nfL._AC_SL1389_.jpg" alt="Emergency Thermal Blankets">
+        <h3>Emergency Blankets (4-Pack)</h3>
+        <p>Space-age Mylar reflects 90% of body heat to keep you warm.</p>
+        <a href="https://amzn.to/3LS2od3" class="buy-btn" target="_blank">Check Price on Amazon</a>
+    </div>
+
+    <div class="product-card filter-item emergency">
+        <img src="https://m.media-amazon.com/images/I/81-nIKO8y2L._AC_SL1500_.jpg" alt="Winter Roadside Kit">
+        <h3>Winter Roadside Kit</h3>
+        <p>Complete kit with folding shovel, tow rope, and flashlight.</p>
+        <a href="https://amzn.to/3NzrKwW" class="buy-btn" target="_blank">Check Price on Amazon</a>
+    </div>
+
+    <div class="product-card filter-item emergency">
+        <img src="https://m.media-amazon.com/images/I/61Al+MoS7aL._AC_SL1500_.jpg" alt="Emergency Glow Sticks">
+        <h3>Emergency Glow Sticks</h3>
+        <p>12 Hours Duration, Individually Wrapped Industrial Grade Glowsticks for Survival Gear and Power Outages.</p>
+        <a href="https://amzn.to/3NBWGwu" class="buy-btn" target="_blank">Check Price on Amazon</a>
+    </div>
+
+    <div class="product-card filter-item emergency">
+        <img src="https://m.media-amazon.com/images/I/81wA76zN2YL._AC_SL1500_.jpg" alt="Yaktrax Spikes">
+        <h3>Yaktrax Spikes for Walking on Ice</h3>
+        <p>Compact, lightweight spiked traction cleats; ideal for navigating icy sidewalks and driveways.</p>
+        <a href="https://amzn.to/3LZkUQU" class="buy-btn" target="_blank">Check Price on Amazon</a>
+    </div>
+
+    <div class="product-card filter-item emergency">
+        <img src="https://m.media-amazon.com/images/I/617z6-gbIvL._AC_SL1000_.jpg" alt="Emergency Anti-Snow Chains">
+        <h3>Emergency Anti-Snow Chains</h3>
+        <p>Portable Anti-Skid Solution for SUV, Pickup Truck, and Cars on Icy Winter Roads.</p>
+        <a href="https://amzn.to/4bU7JuW" class="buy-btn" target="_blank">Check Price on Amazon</a>
+    </div>
+
+    <div class="product-card filter-item apparel">
+        <img src="https://m.media-amazon.com/images/I/61leOR+IocL._AC_SX679_.jpg" alt="Winter Gear for Her">
+        <h3>NexiEpoch Fleece Lined Leggings</h3>
+        <p>Thermal thick winter warm high waisted soft pants for snow cold.</p>
+        <a href="https://amzn.to/466Lq1q" class="buy-btn" target="_blank">Check Price on Amazon</a>
+    </div>
+
+    <div class="product-card filter-item apparel">
+        <img src="https://m.media-amazon.com/images/I/71kuNgSVfjL._AC_SX569_.jpg" alt="Winter Gear for Him">
+        <h3>Wrangler Fleece Lined Pants</h3>
+        <p>Ideal for cold-weather work. Warm fleece lining without the bulk.</p>
+        <a href="https://amzn.to/4qJGicc" class="buy-btn" target="_blank">Check Price on Amazon</a>
+    </div>
+
+    <div class="product-card filter-item apparel">
+        <img src="https://m.media-amazon.com/images/I/81WHJSUYtVL._AC_SX679_.jpg" alt="Winter Gear for Him">
+        <h3>MAGCOMSEN Sherpa Pullover</h3>
+        <p>Heavyweight sherpa lined warm sweatshirt with ribbed cuffs.</p>
+        <a href="https://amzn.to/49Hu0te" class="buy-btn" target="_blank">Check Price on Amazon</a>
+    </div>
+
+    <p class="disclosure">As an Amazon Associate, I earn from qualifying purchases.</p>
+</div>
+
+<script>
+// SHUFFLE ON LOAD
+window.onload = function() {
+    var grid = document.getElementById('product-grid');
+    var cards = Array.from(grid.getElementsByClassName('filter-item'));
+    
+    for (let i = cards.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [cards[i], cards[j]] = [cards[j], cards[i]];
+    }
+
+    cards.forEach(card => grid.appendChild(card));
+    var disc = document.querySelector('.disclosure');
+    if (disc) grid.appendChild(disc);
+};
+
+// FILTER FUNCTION
+function filterSelection(c) {
+    var x, i;
+    x = document.getElementsByClassName("filter-item");
+    if (c == "all") c = "";
+    for (i = 0; i < x.length; i++) {
+        x[i].style.display = "none"; 
+        if (x[i].className.indexOf(c) > -1) {
+            x[i].style.display = "flex"; 
+        }
+    }
+}
+</script>

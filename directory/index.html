@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clay County Business Directory | SMLC</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+</head>
+<body>
+
+    <div class="nav-header">
+        <a href="https://supportmylocalcommunity.com/">Home</a>
+        <a href="https://supportmylocalcommunity.com/clay-city/">Clay City</a>
+        <a href="https://ourflora.com/">Flora</a>
+        <a href="https://supportmylocalcommunity.com/louisville/">Louisville</a>
+        <a href="https://supportmylocalcommunity.com/sailor-springs/">Sailor Springs</a>
+        <a href="https://supportmylocalcommunity.com/xenia/">Xenia</a>
+    </div>
+
+    <header class="main-title">
+        <h1>Clay County Directory</h1>
+        
+        <div class="newspaper-meta single-row">
+            <div class="meta-item left-meta" id="header-info">
+                VOL. 1 — NO. 1 | January 24, 2026
+            </div>
+
+            <div class="meta-item">
+                <select id="town-select" onchange="applyFilters()">
+                    <option value="All">📍 All Towns</option>
+                    <option value="Flora">Flora</option>
+                    <option value="Louisville">Louisville</option>
+                    <option value="Clay City">Clay City</option>
+                    <option value="Xenia">Xenia</option>
+                    <option value="Sailor Springs">Sailor Springs</option>
+                </select>
+            </div>
+
+            <div class="meta-item center-header">
+                <span class="directory-pages">BUSINESS DIRECTORY PAGES</span>
+            </div>
+
+            <div class="meta-item">
+                <select id="cat-select" onchange="applyFilters()">
+                    <option value="All">📂 All Industries</option>
+                    <option value="Emergency">🚨 Emergency Services</option> 
+                    <option value="Manufacturing">🏗️ Manufacturing</option>
+                    <option value="Bars">🍺 Bars & Taverns</option>
+                    <option value="Professional Services">💼 Professional Services</option>
+                    <option value="Financial Services">💰 Financial Services</option>
+                    <option value="Retail">🛒 Retail</option>
+                    <option value="Shopping">🛍️ Shopping</option>
+                    <option value="Restaurants">🍴 Restaurants</option>
+                    <option value="Church">⛪ Church</option>
+                    <option value="Post Office">📬 Post Office</option>
+                    <option value="Healthcare">🏥 Healthcare</option>
+                    <option value="Support Services">🛠️ Support Services</option>
+                    <option value="Internet">🌐 Internet</option>
+                    <option value="Gas Station">⛽ Gas Station</option>
+                    <option value="Industry">🏭 Industry</option>
+                </select>
+            </div>
+
+            <div class="meta-item right-meta">
+                <div style="width: 250px;"> 
+                    <a class="weatherwidget-io" 
+                       href="https://forecast7.com/en/38d66n88d50/62839/?unit=us" 
+                       data-label_1="FLORA" 
+                       data-label_2="WEATHER" 
+                       data-font="Times New Roman" 
+                       data-mode="Current" 
+                       data-days="3" 
+                       data-theme="weather_one">FLORA WEATHER</a>
+                    <script>
+                        !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src='https://weatherwidget.io/js/widget.min.js';fjs.parentNode.insertBefore(js,fjs);}}(document,'script','weatherwidget-io-js');
+                    </script>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="site-wrapper">
+        <div id="directory-grid"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C. C. News</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://kfruti88.github.io/clay-county-news/style.css">
+</head>
+<body>
+
+<div class="newspaper-header">
+    <div class="masthead-title">
+        <h1>C. C. News</h1>
+    </div>
+    
+    <div class="masthead-meta-bar">
+        <div class="meta-item" id="current-date">January 13, 2026</div>
+        <div class="meta-item" id="atomic-chicago-time" style="text-align: center;">--:-- --</div>
+        <div class="meta-item" id="airport-weather" style="text-align: right;">
+            <span id="temp-val">--°F</span> 
+            <span id="condition-val">Syncing...</span>
+        </div>
+    </div>
+
+    <div class="nav-tabs">
+        <button class="tab-link active" onclick="switchView('news')">Local News</button>
+        <button class="tab-link" onclick="openWeatherTab()">Weather Details</button>
+    </div>
+</div>
+
+<div id="town-summaries">
+    <p style="text-align:center;">Syncing latest news summaries...</p>
+</div>
+<div id="full-news-feed"></div>
+
+<script src="https://kfruti88.github.io/clay-county-news/news-engine.js"></script>
+<script>
+    function rotateAds() { return; }
+    window.gData = { config: "production" };
+    
+    // Switch between news and full view if needed
+    function switchView(view) {
+        if(view === 'news') {
+            document.getElementById('town-summaries').style.display = 'flex';
+            document.getElementById('full-news-feed').style.display = 'none';
+        }
+    }
+</script>
+
+</body>
+</html>
