@@ -1,0 +1,20 @@
+{
+  "name": "AI Business Directory",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "googlecloudtools.cloudcode",     // Gemini AI Support
+        "esbenp.prettier-vscode",         // Auto-formatting for CSS/HTML
+        "ms-vscode.live-server",          // Live preview of your directory
+        "ritwickdey.liveserver",          // Alternative Live Server
+        "GitHub.copilot",                 // GitHub Copilot
+        "formulahendry.auto-rename-tag"   // Keeps HTML tags balanced
+      ],
+      "settings": {
+        "editor.fontSize": 14,             // Matches your Size 14 standard
+        "editor.formatOnSave": true,       // Auto-cleans code when you save
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+      }
+    }
+  }
+}
